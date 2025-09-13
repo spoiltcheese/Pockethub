@@ -13,7 +13,6 @@ const AllCards = () => {
       }
 
       const result = await response.json();
-      console.log(result);
       return result;
     } catch (error) {
       console.error(error.message);
@@ -24,10 +23,6 @@ const AllCards = () => {
     queryKey: ["cardMedia"],
     queryFn: getCardMedia,
   });
-
-  // In React (Create React App or Vite), the public directory is at the root of your project.
-  // Files in /public can be referenced with a relative path starting with "/".
-  // For example, if you have an image at /public/media/example.jpg, use src="/media/example.jpg"
 
   return (
     <div>
