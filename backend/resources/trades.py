@@ -46,21 +46,26 @@ def add_trade():
         conn, cursor = get_cursor()
         inputs = request.get_json()
 
+        print("Values being inserted:")
+        print(f"lookingfor: '{inputs['lookingfor']}'")
+        print(f"tradingwith: '{inputs['tradingwith']}'")
+        print(f"GameID: '{inputs['gameID']}'")
+
         cursor.execute(
             """
-            "INSERT INTO trades ("lookingfor","tradingwith","traderID") VALUES (%s, %s, %s)"
+            INSERT INTO trades (lookingfor, tradingwith, id) VALUES (%s, %s, %s)
             """,
             (inputs['lookingfor'], inputs['tradingwith'], inputs['gameID']))
 
-        result = cursor.fetchall()
+        conn.commit()
 
-        return jsonify(result), 200
+        return jsonify(status='ok', msg='addition successful'), 200
 
     except SyntaxError as err:
-        return jsonify({'status': 'error'}), 400
+        return jsonify({'status': 'error', "message": "Syntax error"}), 400
 
     except Exception as err:
-        return jsonify({'status': 'error'}), 400
+        return jsonify({'status': 'error', "message": err}), 400
 
 
     finally:
