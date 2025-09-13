@@ -14,14 +14,22 @@ def register():
     cursor.execute("SELECT uuid FROM auth WHERE email = %s", (inputs['email'],))
     result = cursor.fetchone()
 
+
+
     if result:
         return jsonify(status='error', msg='Email already registered')
 
     hashed_password = bcrypt.hashpw(inputs['password'].encode('utf-8'), bcrypt.gensalt())
 
+    print("Values being inserted:")
+    print(f"Email: '{inputs['email']}'")
+    print(f"Name: '{inputs['name']}'")
+    print(f"Hash: '{hashed_password.decode('utf-8')}'")
+    print(f"GameID: '{inputs['gameID']}'")
+
     cursor.execute(
-        "INSERT INTO auth (email, name, hash) VALUES (%s, %s, %s)",
-        (inputs['email'], inputs['name'], hashed_password.decode('utf-8')))
+        "INSERT INTO auth (email, name, hash, gameID) VALUES (%s, %s, %s, %s)",
+        (inputs['email'], inputs['name'], hashed_password.decode('utf-8'), inputs['gameID']))
     conn.commit()
     release_connection(conn)
 

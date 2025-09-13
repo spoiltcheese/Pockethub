@@ -18,11 +18,40 @@ def find_all_trades():
                         c2."cardname" as tradingwith_cardname,
                         u."traderID" as "traderID",
                         u."traderName" as "traderName"
-                        from "tradesTest" t
+                        from "trades" t
                         join cards c1 on c1.cardnumber = t.lookingfor
                         join cards c2 on c2.cardnumber = t.tradingwith
-                        join "usersTest" u on u."traderID" = t."traderID"
+                        join "auth" u on u."traderID" = t."traderID"
                         """)
+        result = cursor.fetchall()
+
+        return jsonify(result), 200
+
+    except SyntaxError as err:
+        return jsonify({'status': 'error'}), 400
+
+    except Exception as err:
+        return jsonify({'status': 'error'}), 400
+
+
+    finally:
+        release_connection(conn)
+
+@trades.route('/addTrade', methods=['POST'])
+# @jwt_required()
+def add_trade():
+    conn = None
+    try:
+
+        conn, cursor = get_cursor()
+        inputs = request.get_json()
+
+        cursor.execute(
+            """
+            "INSERT INTO trades ("lookingfor","tradingwith","traderID") VALUES (%s, %s, %s)"
+            """,
+            (inputs['lookingfor'], inputs['tradingwith'], inputs['gameID']))
+
         result = cursor.fetchall()
 
         return jsonify(result), 200
