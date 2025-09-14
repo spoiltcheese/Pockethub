@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button } from "react-bootstrap";
 
 const NewTrade = () => {
   const [selectedRarityLF, setSelectedRarityLF] = useState("None");
@@ -41,6 +42,38 @@ const NewTrade = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ rarity: rarity }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data?.errors) {
+          const errorMsgArray = data.msg.map((error) => error.msg);
+          const errorMsgs = errorMsgArray.join(", ");
+          throw data.errors[0].msg;
+        } else if (data.status === "error") {
+          throw data.msg;
+        } else {
+          throw "an unknown error has occurred, please try again later";
+        }
+      }
+
+      return data;
+    } catch (error) {
+      console.error(error.message);
+      return [];
+    }
+  }
+
+  async function addNNewTrade() {
+    const url = "http://localhost:5001/api/addTrade";
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ lookingfor: selectedValueLF, tradingwith: selectedValueTW, gameID: 1234567890123456, traderName: "TestUser" }),
       });
 
       const data = await res.json();
@@ -141,6 +174,10 @@ const NewTrade = () => {
             </Dropdown.Item>
           ))}
       </DropdownButton>
+
+      <Button className="mt-3" variant="primary" type="submit" onClick={}>
+        Submit Trade
+      </Button>
 
       <style>{`
             .dropdown-menu {
