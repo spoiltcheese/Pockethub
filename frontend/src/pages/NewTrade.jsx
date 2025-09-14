@@ -73,10 +73,21 @@ const NewTrade = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ lookingfor: selectedValueLF, tradingwith: selectedValueTW, gameID: 1234567890123456, traderName: "TestUser" }),
+        body: JSON.stringify({
+          lookingfor: selectedValueLF,
+          tradingwith: selectedValueTW,
+          gameID: 1234567890123456,
+          traderName: "TestUser",
+        }),
       });
 
-      const data = await res.json();
+      let data;
+      const text = await res.text();
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        throw new Error("Server did not return valid JSON.");
+      }
 
       if (!res.ok) {
         if (data?.errors) {
@@ -92,7 +103,7 @@ const NewTrade = () => {
 
       return data;
     } catch (error) {
-      console.error(error.message);
+      console.error(error.message || error);
       return [];
     }
   }
@@ -145,20 +156,6 @@ const NewTrade = () => {
       <p className="mt-2">Trading with: {selectedValueTW}</p>
 
       <DropdownButton
-        id="rarity-dropdown"
-        title={`Selected: ${selectedRarityLF}`}
-        onSelect={handleSelectRarityLF}
-        menuAlign="left"
-        style={{ maxWidth: "100%" }}
-      >
-        <Dropdown.Item eventKey="1D">1 Diamond</Dropdown.Item>
-        <Dropdown.Item eventKey="2D">2 Diamond</Dropdown.Item>
-        <Dropdown.Item eventKey="3D">3 Diamond</Dropdown.Item>
-        <Dropdown.Item eventKey="4D">4 Diamond</Dropdown.Item>
-        <Dropdown.Item eventKey="1S">1 Star</Dropdown.Item>
-      </DropdownButton>
-
-      <DropdownButton
         id="filtered-cards-dropdown"
         title={`Selected: ${selectedValueTW}`}
         menuAlign="left"
@@ -175,7 +172,12 @@ const NewTrade = () => {
           ))}
       </DropdownButton>
 
-      <Button className="mt-3" variant="primary" type="submit" onClick={}>
+      <Button
+        className="mt-3"
+        variant="primary"
+        type="submit"
+        onClick={addNNewTrade}
+      >
         Submit Trade
       </Button>
 
