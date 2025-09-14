@@ -7,6 +7,7 @@ import AllCards from "./pages/AllCards";
 import NavBar from "./components/NavBar";
 import AllTrades from "./pages/AllTrades";
 import NewTrade from "./pages/NewTrade";
+import Registration from "./pages/Registration";
 
 function App() {
   const [accessToken, setAccessToken] = useState(""); // Access token state
@@ -25,6 +26,7 @@ function App() {
             <Route path="/cards" element={<AllCards />} />
             <Route path="/trades" element={<AllTrades />} />
             <Route path="/newtrade" element={<NewTrade />} />
+            <Route path="/register" element={<Registration />} />
           </Routes>
         </UserContext.Provider>
       </Suspense>
