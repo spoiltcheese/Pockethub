@@ -6,6 +6,7 @@ import { Navigate, Route, Routes } from "react-router";
 import AllCards from "./pages/AllCards";
 import NavBar from "./components/NavBar";
 import AllTrades from "./pages/AllTrades";
+import NewTrade from "./pages/NewTrade";
 
 function App() {
   const [accessToken, setAccessToken] = useState(""); // Access token state
@@ -23,6 +24,7 @@ function App() {
             <Route path="/login" element={<div>Login Page</div>} />
             <Route path="/cards" element={<AllCards />} />
             <Route path="/trades" element={<AllTrades />} />
+            <Route path="/newtrade" element={<NewTrade />} />
           </Routes>
         </UserContext.Provider>
       </Suspense>
