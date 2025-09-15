@@ -10,16 +10,25 @@ import NewTrade from "./pages/NewTrade";
 import Registration from "./pages/Registration";
 import Login from "./pages/Login";
 import MyTrades from "./pages/MyTrades";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const [accessToken, setAccessToken] = useState(""); // Access token state
+  const [username, setUsername] = useState("");
   const [role, setRole] = useState(""); // User role state
 
   return (
     <div className="container">
       <Suspense fallback={<p>Loading...</p>}>
         <UserContext.Provider
-          value={{ accessToken, setAccessToken, role, setRole }}
+          value={{
+            accessToken,
+            setAccessToken,
+            username,
+            setUsername,
+            role,
+            setRole,
+          }}
         >
           <NavBar />
           <Routes>
@@ -27,9 +36,23 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/cards" element={<AllCards />} />
             <Route path="/trades" element={<AllTrades />} />
-            <Route path="/newtrade" element={<NewTrade />} />
+            <Route
+              path="/newtrade"
+              element={
+                <ProtectedRoute>
+                  <NewTrade />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/register" element={<Registration />} />
-            <Route path="/mytrades" element={<MyTrades />} />
+            <Route
+              path="/mytrades"
+              element={
+                <ProtectedRoute>
+                  <MyTrades />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </UserContext.Provider>
       </Suspense>

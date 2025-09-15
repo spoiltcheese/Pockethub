@@ -34,6 +34,14 @@ const NavBar = () => {
                 Register
               </Link>
             </li>
+
+            <li className="nav-item">
+              {localStorage.getItem("currentUserID") ? (
+                <Link className="nav-link" to="/mytrades">
+                  My Trades {`(${localStorage.getItem("currentUserID")})`}
+                </Link>
+              ) : null}
+            </li>
           </ul>
         </div>
       </nav>

@@ -41,9 +41,11 @@ const Login = () => {
       }
 
       const decoded = jwtDecode(data.access_token);
+      userCtx.setAccessToken(data.access_token);
       if (decoded) {
-        console.log(decoded.gameID);
-        sessionStorage.setItem("currentUser", JSON.stringify(decoded.gameID));
+        console.log(decoded);
+        sessionStorage.setItem("currentUserID", JSON.stringify(decoded.gameID));
+        sessionStorage.setItem("currentUserName", JSON.stringify(decoded.name));
       }
       navigate("/mytrades");
     } catch (error) {

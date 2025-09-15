@@ -5,6 +5,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "react-bootstrap";
 
 const NewTrade = () => {
+  const [currentUser, getCurrentUser] = useState(() => {
+    const savedData = localStorage.getItem("currentUser");
+    return savedData ? savedData : "no User found";
+  });
+
   const [selectedRarityLF, setSelectedRarityLF] = useState("None");
   const [selectedValueLF, setSelectedValueLF] = useState("None");
 
@@ -65,7 +70,7 @@ const NewTrade = () => {
     }
   }
 
-  async function addNNewTrade() {
+  async function addNewTrade() {
     const url = "http://localhost:5001/api/addTrade";
     try {
       const res = await fetch(url, {
@@ -76,8 +81,8 @@ const NewTrade = () => {
         body: JSON.stringify({
           lookingfor: selectedValueLF,
           tradingwith: selectedValueTW,
-          gameID: 1234567890123456,
-          traderName: "TestUser",
+          traderID: localStorage.getItem("currentUserID").replace(/"/g, ""),
+          traderName: localStorage.getItem("currentUserName").replace(/"/g, ""),
         }),
       });
 
@@ -111,11 +116,6 @@ const NewTrade = () => {
   const queryCardMedia = useQuery({
     queryKey: ["cardsByRarity", selectedRarityLF],
     queryFn: () => getFilteredCards(selectedRarityLF),
-  });
-
-  const queryCardMedia2 = useQuery({
-    queryKey: ["cardsByRarity2", selectedRarityTW],
-    queryFn: () => getFilteredCards(selectedRarityTW),
   });
 
   return (
@@ -176,7 +176,7 @@ const NewTrade = () => {
         className="mt-3"
         variant="primary"
         type="submit"
-        onClick={addNNewTrade}
+        onClick={addNewTrade}
       >
         Submit Trade
       </Button>

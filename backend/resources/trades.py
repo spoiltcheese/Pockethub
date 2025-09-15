@@ -37,36 +37,81 @@ def find_all_trades():
     finally:
         release_connection(conn)
 
-@trades.route('/addTrade', methods=['POST'])
+@trades.route('/myTrades' , methods=['POST'])
 # @jwt_required()
+def find_user_trades():
+    conn = None
+    try:
+        conn, cursor = get_cursor()
+        inputs = request.get_json()
+        cursor.execute("""select DISTINCT
+                        c1."cardname" as lookingfor_cardname,
+                        c2."cardname" as tradingwith_cardname,
+                        u."traderID" as "traderID",
+                        u."traderName" as "traderName"
+                        from "trades" t
+                        join cards c1 on c1.cardnumber = t.lookingfor
+                        join cards c2 on c2.cardnumber = t.tradingwith
+                        join "auth" u on u."traderID" = t."traderID"
+                        where u."traderID" = %s
+                        """,
+                       (inputs['gameID'],))
+        result = cursor.fetchall()
+
+        return jsonify(result), 200
+
+    except SyntaxError as err:
+        return jsonify({'status': 'error'}), 400
+
+    except Exception as err:
+        return jsonify({'status': 'error'}), 400
+
+
+    finally:
+        release_connection(conn)
+
+@trades.route('/addTrade', methods=['POST'])
 def add_trade():
     conn = None
     try:
-
         conn, cursor = get_cursor()
         inputs = request.get_json()
 
         print("Values being inserted:")
         print(f"lookingfor: '{inputs['lookingfor']}'")
         print(f"tradingwith: '{inputs['tradingwith']}'")
-        print(f"GameID: '{inputs['gameID']}'")
+        print(f"GameID: '{inputs['traderID']}'")
 
         cursor.execute(
             """
-            INSERT INTO trades (lookingfor, tradingwith, id) VALUES (%s, %s, %s)
+            INSERT INTO trades (lookingfor, tradingwith, traderid) VALUES (%s, %s, %s)
             """,
-            (inputs['lookingfor'], inputs['tradingwith'], inputs['gameID']))
+            (inputs['lookingfor'], inputs['tradingwith'], inputs['traderID']))
+
+        # Check if the row was actually inserted
+        print(f"Rows affected: {cursor.rowcount}")
 
         conn.commit()
+        print("Transaction committed successfully")
 
         return jsonify(status='ok', msg='addition successful'), 200
 
-    except SyntaxError as err:
-        return jsonify({'status': 'error', "message": "Syntax error"}), 400
+    except psycopg2.Error as db_err:  # Catch database-specific errors
+        print(f"Database error: {db_err}")
+        if conn:
+            conn.rollback()
+        return jsonify({'status': 'error', "message": str(db_err)}), 400
+
+    except KeyError as key_err:
+        print(f"Missing key in input: {key_err}")
+        return jsonify({'status': 'error', "message": f"Missing required field: {key_err}"}), 400
 
     except Exception as err:
-        return jsonify({'status': 'error', "message": err}), 400
-
+        print(f"General error: {err}")
+        if conn:
+            conn.rollback()
+        return jsonify({'status': 'error', "message": str(err)}), 400
 
     finally:
         release_connection(conn)
+        

@@ -1,9 +1,9 @@
-import React, { use } from "react";
+import React, { useContext } from "react";
 import UserContext from "../context/user";
 import { Navigate } from "react-router";
 
 const ProtectedRoute = (props) => {
-  const userCtx = use(UserContext);
+  const userCtx = useContext(UserContext);
   const isAuthenticated = userCtx.accessToken.length > 0;
 
   if (!isAuthenticated) {
