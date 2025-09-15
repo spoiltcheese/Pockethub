@@ -82,8 +82,8 @@ const Login = () => {
   //   }, []);
 
   return (
-    <div className="w-50 h-50 mx-auto">
-      <div className="card text-bg-dark">
+    <div>
+      <div>
         <div className="card-title text-center mt-4 mb-4">
           <h3>Login</h3>
         </div>
@@ -126,7 +126,7 @@ const Login = () => {
           className="card-body row text-center"
           style={{ marginTop: "-20px" }}
         >
-          <Link to="/registr">Sign up</Link>
+          <Link to="/register">Sign up</Link>
         </div>
       </div>
     </div>
