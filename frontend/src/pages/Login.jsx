@@ -5,12 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/user";
 
 const Login = () => {
-  //const authCtx = use(AuthCtx);
   const userCtx = useContext(UserContext);
 
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const navigate = useNavigate();
+  const [currentUser, getCurrentUser] = useState("");
 
   const doLogin = async () => {
     const url = `${import.meta.env.VITE_API_URL}/auth/login`;
@@ -21,7 +21,7 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: usernameInput.trim(),
+          email: usernameInput.trim(),
           password: passwordInput.trim(),
         }),
       });
@@ -40,7 +40,12 @@ const Login = () => {
         }
       }
 
-      return data;
+      const decoded = jwtDecode(data.access_token);
+      if (decoded) {
+        console.log(decoded.gameID);
+        sessionStorage.setItem("currentUser", JSON.stringify(decoded.gameID));
+      }
+      navigate("/mytrades");
     } catch (error) {
       console.error(error.message);
       return [];
@@ -80,6 +85,13 @@ const Login = () => {
   //     const refresh = localStorage.getItem("refresh");
   //     if (refresh && refresh !== "undefined") refreshAccessTokenMutation.mutate();
   //   }, []);
+
+  const loginQuery = useMutation({
+    mutationFn: doLogin,
+    onSuccess: () => {
+      navigate("/mytrades");
+    },
+  });
 
   return (
     <div>
@@ -121,6 +133,16 @@ const Login = () => {
           </button>
           <div className="col-sm-4" />
         </div>
+
+        <button
+          className="col-sm-4 btn btn-primary"
+          onClick={(event) => {
+            event.preventDefault();
+            loginQuery.mutate();
+          }}
+        >
+          Sign in
+        </button>
 
         <div
           className="card-body row text-center"

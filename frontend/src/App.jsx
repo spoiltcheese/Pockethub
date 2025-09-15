@@ -9,6 +9,7 @@ import AllTrades from "./pages/AllTrades";
 import NewTrade from "./pages/NewTrade";
 import Registration from "./pages/Registration";
 import Login from "./pages/Login";
+import MyTrades from "./pages/MyTrades";
 
 function App() {
   const [accessToken, setAccessToken] = useState(""); // Access token state
@@ -28,6 +29,7 @@ function App() {
             <Route path="/trades" element={<AllTrades />} />
             <Route path="/newtrade" element={<NewTrade />} />
             <Route path="/register" element={<Registration />} />
+            <Route path="/mytrades" element={<MyTrades />} />
           </Routes>
         </UserContext.Provider>
       </Suspense>
