@@ -138,6 +138,7 @@ def find_single_trades(trade_id):
     conn = None
     try:
         conn, cursor = get_cursor()
+
         cursor.execute("""select DISTINCT *
                         from "trades" t
                         where t."uuid" = %s
@@ -157,6 +158,33 @@ def find_single_trades(trade_id):
     finally:
         release_connection(conn)
 
+
+@trades.route('/trades/<trade_id>' , methods=['POST'])
+# @jwt_required()
+def find_single_trade_filtered(trade_id):
+    conn = None
+    try:
+        conn, cursor = get_cursor()
+        inputs = request.get_json()
+        cursor.execute("""select DISTINCT *
+                        from "trades" t
+                        where t."uuid" = %s
+                        and i."traderid" != %s
+                        """,
+                       (trade_id,inputs['gameID']))
+        result = cursor.fetchall()
+
+        return jsonify(result), 200
+
+    except SyntaxError as err:
+        return jsonify({'status': 'error'}), 400
+
+    except Exception as err:
+        return jsonify({'status': 'error'}), 400
+
+
+    finally:
+        release_connection(conn)
 
 @trades.route('/trades/acceptTrade/<trade_id>')
 # @jwt_required()

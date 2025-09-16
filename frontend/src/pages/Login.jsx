@@ -46,6 +46,9 @@ const Login = () => {
         console.log(decoded);
         localStorage.setItem("currentUserID", JSON.stringify(decoded.gameID));
         localStorage.setItem("currentUserName", JSON.stringify(decoded.name));
+        userCtx.setUsername(decoded.name);
+        userCtx.setRole(decoded.role);
+        userCtx.setGameID(decoded.gameID);
       }
       navigate("/mytrades");
       return data;

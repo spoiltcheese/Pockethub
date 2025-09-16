@@ -50,7 +50,7 @@ def login():
     if not access:
         return jsonify(status='error', msg='Email or Password incorrect'), 400
 
-    claims = {'name': result['name'], 'gameID': result['gameid']}
+    claims = {'name': result['name'], 'gameID': result['gameid'], 'role': result['role']}
     access_token = create_access_token(result['email'], additional_claims=claims)
     refresh_token = create_access_token(result['email'], additional_claims=claims)
 
@@ -65,3 +65,5 @@ def refresh():
     access_token = create_access_token(identity=identity, additional_claims=claims)
 
     return jsonify(status='ok', access_token=access_token), 200
+
+

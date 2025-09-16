@@ -16,6 +16,7 @@ import SingleTrade from "./pages/SingleTrade";
 function App() {
   const [accessToken, setAccessToken] = useState(""); // Access token state
   const [username, setUsername] = useState("");
+  const [gameID, setGameID] = useState("");
   const [role, setRole] = useState(""); // User role state
 
   return (
@@ -29,6 +30,8 @@ function App() {
             setUsername,
             role,
             setRole,
+            gameID,
+            setGameID,
           }}
         >
           <NavBar />
