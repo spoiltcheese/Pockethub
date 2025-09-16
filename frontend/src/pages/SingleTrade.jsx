@@ -21,6 +21,38 @@ const SingleTrade = () => {
     }
   }
 
+  async function acceptTrade() {
+    const url = `http://localhost:5001/api/acceptTrade/${tradeID}`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error(error.message);
+      return [];
+    }
+  }
+
+  async function completeTrade() {
+    const url = `http://localhost:5001/api/completeTrade/${tradeID}`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error(error.message);
+      return [];
+    }
+  }
+
   const queryTrade = useQuery({
     queryKey: ["trade", tradeID],
     queryFn: getTrade,
@@ -48,10 +80,13 @@ const SingleTrade = () => {
             ))}
         </div>
       )}
-      <div className="row">
-        <div className="col-md-6"></div>
-        <div className="col-md-6"></div>
-      </div>
+      <button className="col-sm-4 btn btn-primary" onClick={acceptTrade}>
+        Accept Trade
+      </button>
+
+      <button className="col-sm-4 btn btn-danger" onClick={completeTrade}>
+        Complete Trade
+      </button>
     </div>
   );
 };

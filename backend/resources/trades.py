@@ -49,27 +49,38 @@ def find_user_trades():
     try:
         conn, cursor = get_cursor()
         inputs = request.get_json()
-        cursor.execute("""select DISTINCT
-                        c1."cardname" as lookingfor_cardname,
-                        c2."cardname" as tradingwith_cardname,
-                        u."traderID" as "traderID",
-                        u."traderName" as "traderName"
-                        from "trades" t
-                        join cards c1 on c1.cardnumber = t.lookingfor
-                        join cards c2 on c2.cardnumber = t.tradingwith
-                        join "auth" u on u."traderID" = t."traderID"
-                        where u."traderID" = %s
+        cursor.execute("""
+                        select DISTINCT * FROM trades
+                        where "traderid" = %s
                         """,
                        (inputs['gameID'],))
         result = cursor.fetchall()
 
         return jsonify(result), 200
 
-    except SyntaxError as err:
-        return jsonify({'status': 'error'}), 400
+
+    except psycopg2.Error as db_err:  # Catch database-specific errors
+
+        print(f"Database error: {db_err}")
+
+        if conn:
+            conn.rollback()
+
+        return jsonify({'status': 'error', "message": str(db_err)}), 400
+
+    except KeyError as key_err:
+        print(f"Missing key in input: {key_err}")
+        return jsonify({'status': 'error', "message": f"Missing required field: {key_err}"}), 400
+
 
     except Exception as err:
-        return jsonify({'status': 'error'}), 400
+
+        print(f"General error: {err}")
+
+        if conn:
+            conn.rollback()
+
+        return jsonify({'status': 'error', "message": str(err)}), 400
 
 
     finally:
@@ -87,6 +98,7 @@ def add_trade():
         print(f"tradingwith: '{inputs['tradingwith']}'")
         print(f"GameID: '{inputs['traderID']}'")
 
+        #TODO: add pending status
         cursor.execute(
             """
             INSERT INTO trades (lookingfor, tradingwith, traderid) VALUES (%s, %s, %s)
@@ -152,4 +164,57 @@ def find_single_trades(trade_id):
     finally:
         release_connection(conn)
 
+
+@trades.route('/trades/acceptTrade/<trade_id>')
+# @jwt_required()
+def accept_trade(trade_id):
+    conn = None
+    try:
+        conn, cursor = get_cursor()
+        cursor.execute("""
+                        UPDATE trades
+                        SET "status" = 'ACCEPTED'
+                        where t."uuid" = %s
+                        """,
+                       (trade_id,))
+        result = cursor.fetchall()
+
+        return jsonify(result), 200
+
+    except SyntaxError as err:
+        return jsonify({'status': 'error'}), 400
+
+    except Exception as err:
+        return jsonify({'status': 'error'}), 400
+
+
+    finally:
+        release_connection(conn)
+
+
+@trades.route('/trades/confirmTrade/<trade_id>')
+# @jwt_required()
+def confirm_trade(trade_id):
+    conn = None
+    try:
+        conn, cursor = get_cursor()
+        cursor.execute("""
+                        UPDATE trades
+                        SET "status" = 'COMPLETED'
+                        where t."uuid" = %s
+                        """,
+                       (trade_id,))
+        result = cursor.fetchall()
+
+        return jsonify(result), 200
+
+    except SyntaxError as err:
+        return jsonify({'status': 'error'}), 400
+
+    except Exception as err:
+        return jsonify({'status': 'error'}), 400
+
+
+    finally:
+        release_connection(conn)
         
