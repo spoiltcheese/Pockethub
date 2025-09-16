@@ -13,25 +13,30 @@ def find_all_trades():
     conn = None
     try:
         conn, cursor = get_cursor()
-        cursor.execute("""select DISTINCT
-                        c1."cardname" as lookingfor_cardname,
-                        c2."cardname" as tradingwith_cardname,
-                        u."traderID" as "traderID",
-                        u."traderName" as "traderName"
-                        from "trades" t
-                        join cards c1 on c1.cardnumber = t.lookingfor
-                        join cards c2 on c2.cardnumber = t.tradingwith
-                        join "auth" u on u."traderID" = t."traderID"
+        # cursor.execute("""select DISTINCT
+        #                 c1."cardname" as lookingfor_cardname,
+        #                 c2."cardname" as tradingwith_cardname,
+        #                 u."gameid" as "traderID",
+        #                 u."name" as "traderName"
+        #                 from "trades" t
+        #                 join cards c1 on c1.cardnumber = t.lookingfor
+        #                 join cards c2 on c2.cardnumber = t.tradingwith
+        #                 join "auth" u on u."gameid" = t."traderid"
+        #                 """)
+
+        cursor.execute("""
+                        select DISTINCT * from trades
                         """)
+
         result = cursor.fetchall()
 
         return jsonify(result), 200
 
     except SyntaxError as err:
-        return jsonify({'status': 'error'}), 400
+        return jsonify({'status': 'syntax error', 'message': err }), 400
 
     except Exception as err:
-        return jsonify({'status': 'error'}), 400
+        return jsonify({'status': 'error','message': err}), 400
 
 
     finally:
@@ -114,4 +119,37 @@ def add_trade():
 
     finally:
         release_connection(conn)
+
+@trades.route('/trades/<trade_id>')
+# @jwt_required()
+def find_single_trades(trade_id):
+    conn = None
+    try:
+        conn, cursor = get_cursor()
+        cursor.execute("""select DISTINCT
+                        c1."cardname" as lookingfor_cardname,
+                        c2."cardname" as tradingwith_cardname,
+                        u."traderID" as "traderID",
+                        u."traderName" as "traderName"
+                        from "trades" t
+                        join cards c1 on c1.cardnumber = t.lookingfor
+                        join cards c2 on c2.cardnumber = t.tradingwith
+                        join "auth" u on u."traderID" = t."traderID"
+                        where t."uuid" = %s
+                        """,
+                       (trade_id,))
+        result = cursor.fetchall()
+
+        return jsonify(result), 200
+
+    except SyntaxError as err:
+        return jsonify({'status': 'error'}), 400
+
+    except Exception as err:
+        return jsonify({'status': 'error'}), 400
+
+
+    finally:
+        release_connection(conn)
+
         

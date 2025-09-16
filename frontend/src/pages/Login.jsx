@@ -44,8 +44,8 @@ const Login = () => {
       userCtx.setAccessToken(data.access_token);
       if (decoded) {
         console.log(decoded);
-        sessionStorage.setItem("currentUserID", JSON.stringify(decoded.gameID));
-        sessionStorage.setItem("currentUserName", JSON.stringify(decoded.name));
+        localStorage.setItem("currentUserID", JSON.stringify(decoded.gameID));
+        localStorage.setItem("currentUserName", JSON.stringify(decoded.name));
       }
       navigate("/mytrades");
     } catch (error) {

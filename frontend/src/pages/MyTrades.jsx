@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const MyTrades = () => {
   const [currentUser, getCurrentUser] = useState(() => {
-    const savedData = sessionStorage.getItem("currentUserID");
+    const savedData = localStorage.getItem("currentUserID");
     return savedData ? savedData : "no User found";
   });
 
