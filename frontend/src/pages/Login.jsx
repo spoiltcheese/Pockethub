@@ -46,6 +46,9 @@ const Login = () => {
         console.log(decoded);
         localStorage.setItem("currentUserID", JSON.stringify(decoded.gameID));
         localStorage.setItem("currentUserName", JSON.stringify(decoded.name));
+        localStorage.setItem("refresh", JSON.stringify(data.refresh_token));
+        localStorage.setItem("access", JSON.stringify(data.access_token));
+        localStorage.setItem("role", JSON.stringify(decoded.role));
         userCtx.setUsername(decoded.name);
         userCtx.setRole(decoded.role);
         userCtx.setGameID(decoded.gameID);

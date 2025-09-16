@@ -67,3 +67,27 @@ def refresh():
     return jsonify(status='ok', access_token=access_token), 200
 
 
+##TODO: protect this endpoint
+@auth.route('/users')
+#@jwt_required()
+def get_users():
+    conn = None
+    try:
+        conn, cursor = get_cursor()
+        cursor.execute("SELECT * FROM auth")
+        result = cursor.fetchall()
+
+        return jsonify(result), 200
+
+    except SyntaxError as err:
+        return jsonify({'status': 'error'}), 400
+
+    except Exception as err:
+        return jsonify({'status': 'error'}), 400
+
+
+    finally:
+        release_connection(conn)
+
+
+

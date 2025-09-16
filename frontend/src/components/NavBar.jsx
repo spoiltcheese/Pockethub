@@ -42,6 +42,12 @@ const NavBar = () => {
                 </Link>
               ) : null}
             </li>
+
+            <li className="nav-item">
+              <Link className="nav-link" to="/allusers">
+                All Users
+              </Link>
+            </li>
           </ul>
         </div>
       </nav>

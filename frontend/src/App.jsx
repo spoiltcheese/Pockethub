@@ -12,6 +12,8 @@ import Login from "./pages/Login";
 import MyTrades from "./pages/MyTrades";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SingleTrade from "./pages/SingleTrade";
+import AdminRoute from "./components/AdminRoute";
+import AllUsers from "./pages/AllUsers";
 
 function App() {
   const [accessToken, setAccessToken] = useState(""); // Access token state
@@ -56,6 +58,15 @@ function App() {
                 <ProtectedRoute>
                   <MyTrades />
                 </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/allusers"
+              element={
+                <AdminRoute>
+                  <AllUsers />
+                </AdminRoute>
               }
             />
           </Routes>
