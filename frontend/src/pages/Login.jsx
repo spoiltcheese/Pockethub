@@ -48,6 +48,7 @@ const Login = () => {
         localStorage.setItem("currentUserName", JSON.stringify(decoded.name));
       }
       navigate("/mytrades");
+      return data;
     } catch (error) {
       console.error(error.message);
       return [];

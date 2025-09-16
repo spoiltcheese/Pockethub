@@ -16,7 +16,7 @@ const MyTrades = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          traderID: localStorage.getItem("currentUserID"),
+          gameID: localStorage.getItem("currentUserID").replace(/"/g, ""),
         }),
       });
 
@@ -58,8 +58,6 @@ const MyTrades = () => {
       <div className="row">
         <div className="col-md-3">Looking for:</div>
         <div className="col-md-3">Cards available to trade:</div>
-        <div className="col-md-3">Trader ID:</div>
-        <div className="col-md-3">Trader Name:</div>
       </div>
 
       {queryAllTrades.isSuccess && (
@@ -67,10 +65,8 @@ const MyTrades = () => {
           {queryAllTrades.data &&
             queryAllTrades.data.map((trade) => (
               <div className="row" key={trade.id}>
-                <div className="col-md-3">{trade.lookingfor_cardname}</div>
-                <div className="col-md-3">{trade.tradingwith_cardname}</div>
-                <div className="col-md-3">{trade.traderID}</div>
-                <div className="col-md-3">{trade.traderName}</div>
+                <div className="col-md-3">{trade.lookingfor}</div>
+                <div className="col-md-3">{trade.tradingwith}</div>
               </div>
             ))}
         </div>
