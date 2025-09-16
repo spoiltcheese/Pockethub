@@ -71,6 +71,10 @@ def refresh():
 @auth.route('/users')
 #@jwt_required()
 def get_users():
+    #claims = get_jwt()
+    #if claims['role'] != 'admin':
+    #    return jsonify(status='error', msg='Unauthorised'), 401
+
     conn = None
     try:
         conn, cursor = get_cursor()
