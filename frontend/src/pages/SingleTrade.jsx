@@ -1,12 +1,13 @@
-import React, { useParams } from "react";
+import React from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router";
 
 const SingleTrade = () => {
   const queryClient = useQueryClient();
   const { tradeID } = useParams();
 
   async function getTrade() {
-    const url = `http://localhost:5001/api/trade/${tradeID}`;
+    const url = `http://localhost:5001/api/trades/${tradeID}`;
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -22,7 +23,7 @@ const SingleTrade = () => {
   }
 
   async function acceptTrade() {
-    const url = `http://localhost:5001/api/acceptTrade/${tradeID}`;
+    const url = `http://localhost:5001/api/trades/acceptTrade/${tradeID}`;
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -38,7 +39,7 @@ const SingleTrade = () => {
   }
 
   async function completeTrade() {
-    const url = `http://localhost:5001/api/completeTrade/${tradeID}`;
+    const url = `http://localhost:5001/api/trades/completeTrade/${tradeID}`;
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -64,7 +65,6 @@ const SingleTrade = () => {
         <div className="col-md-3">Looking for:</div>
         <div className="col-md-3">Cards available to trade:</div>
         <div className="col-md-3">Trader ID:</div>
-        <div className="col-md-3">Trader Name:</div>
       </div>
 
       {queryTrade.isSuccess && (
@@ -72,10 +72,9 @@ const SingleTrade = () => {
           {queryTrade.data &&
             queryTrade.data.map((trade) => (
               <div className="row" key={trade.id}>
-                <div className="col-md-3">{trade.lookingfor_cardname}</div>
-                <div className="col-md-3">{trade.tradingwith_cardname}</div>
-                <div className="col-md-3">{trade.traderID}</div>
-                <div className="col-md-3">{trade.traderName}</div>
+                <div className="col-md-3">{trade.lookingfor}</div>
+                <div className="col-md-3">{trade.tradingwith}</div>
+                <div className="col-md-3">{trade.traderid}</div>
               </div>
             ))}
         </div>

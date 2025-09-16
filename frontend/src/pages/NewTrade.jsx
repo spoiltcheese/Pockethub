@@ -4,6 +4,8 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "react-bootstrap";
 
+import { Link, useNavigate } from "react-router-dom";
+
 const NewTrade = () => {
   const [currentUser, getCurrentUser] = useState(() => {
     const savedData = localStorage.getItem("currentUser");
@@ -13,7 +15,6 @@ const NewTrade = () => {
   const [selectedRarityLF, setSelectedRarityLF] = useState("None");
   const [selectedValueLF, setSelectedValueLF] = useState("None");
 
-  const [selectedRarityTW, setSelectedRarityTW] = useState("None");
   const [selectedValueTW, setSelectedValueTW] = useState("None");
 
   const handleSelectRarityLF = (eventKey) => {
@@ -24,13 +25,11 @@ const NewTrade = () => {
     setSelectedValueLF(eventKey);
   };
 
-  const handleSelectRarityTW = (eventKey) => {
-    setSelectedRarityTW(eventKey);
-  };
-
   const handleSelectValueTW = (eventKey) => {
     setSelectedValueTW(eventKey);
   };
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     //console.log(`Selected rarity changed to: ${selectedRarity}`);
@@ -104,8 +103,9 @@ const NewTrade = () => {
         } else {
           throw "an unknown error has occurred, please try again later";
         }
+      } else {
+        navigate("/mytrades");
       }
-
       return data;
     } catch (error) {
       console.error(error.message || error);

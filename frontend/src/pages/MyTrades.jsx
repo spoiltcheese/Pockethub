@@ -64,7 +64,10 @@ const MyTrades = () => {
         <div>
           {queryAllTrades.data &&
             queryAllTrades.data.map((trade) => (
-              <div className="row" key={trade.id}>
+              <div className="row" key={trade.uuid}>
+                <div className="col-md-3">
+                  <a href={`/trade/${trade.uuid}`}>Go to trade</a>
+                </div>
                 <div className="col-md-3">{trade.lookingfor}</div>
                 <div className="col-md-3">{trade.tradingwith}</div>
               </div>

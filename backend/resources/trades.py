@@ -138,15 +138,8 @@ def find_single_trades(trade_id):
     conn = None
     try:
         conn, cursor = get_cursor()
-        cursor.execute("""select DISTINCT
-                        c1."cardname" as lookingfor_cardname,
-                        c2."cardname" as tradingwith_cardname,
-                        u."traderID" as "traderID",
-                        u."traderName" as "traderName"
+        cursor.execute("""select DISTINCT *
                         from "trades" t
-                        join cards c1 on c1.cardnumber = t.lookingfor
-                        join cards c2 on c2.cardnumber = t.tradingwith
-                        join "auth" u on u."traderID" = t."traderID"
                         where t."uuid" = %s
                         """,
                        (trade_id,))
@@ -171,28 +164,50 @@ def accept_trade(trade_id):
     conn = None
     try:
         conn, cursor = get_cursor()
+        print(f"Accepted trade: {trade_id}")
         cursor.execute("""
                         UPDATE trades
                         SET "status" = 'ACCEPTED'
-                        where t."uuid" = %s
+                        where "uuid" = %s
                         """,
                        (trade_id,))
-        result = cursor.fetchall()
+        conn.commit()
 
-        return jsonify(result), 200
+        return jsonify(status='ok', msg='status update successful'), 200
 
-    except SyntaxError as err:
-        return jsonify({'status': 'error'}), 400
+
+    except psycopg2.Error as db_err:  # Catch database-specific errors
+
+        print(f"Database error: {db_err}")
+
+        if conn:
+            conn.rollback()
+
+        return jsonify({'status': 'error', "message": str(db_err)}), 400
+
+
+    except KeyError as key_err:
+
+        print(f"Missing key in input: {key_err}")
+
+        return jsonify({'status': 'error', "message": f"Missing required field: {key_err}"}), 400
+
 
     except Exception as err:
-        return jsonify({'status': 'error'}), 400
+
+        print(f"General error: {err}")
+
+        if conn:
+            conn.rollback()
+
+        return jsonify({'status': 'error', "message": str(err)}), 400
 
 
     finally:
         release_connection(conn)
 
 
-@trades.route('/trades/confirmTrade/<trade_id>')
+@trades.route('/trades/completeTrade/<trade_id>')
 # @jwt_required()
 def confirm_trade(trade_id):
     conn = None
@@ -201,12 +216,12 @@ def confirm_trade(trade_id):
         cursor.execute("""
                         UPDATE trades
                         SET "status" = 'COMPLETED'
-                        where t."uuid" = %s
+                        where "uuid" = %s
                         """,
                        (trade_id,))
-        result = cursor.fetchall()
+        conn.commit()
 
-        return jsonify(result), 200
+        return jsonify(status='ok', msg='status update successful'), 200
 
     except SyntaxError as err:
         return jsonify({'status': 'error'}), 400
