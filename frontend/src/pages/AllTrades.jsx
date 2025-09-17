@@ -38,21 +38,39 @@ const AllTrades = () => {
         <div>
           {queryAllTrades.data &&
             queryAllTrades.data.map((trade) => (
-              <div className="row" key={trade.uuid}>
-                <div className="col-md-3">
-                  <a href={`/trade/${trade.uuid}`}>Go to trade</a>
+              <>
+                <div className="row" key={trade.uuid}>
+                  <div className="col-md-3">
+                    <a href={`/trade/${trade.uuid}`}>Go to trade</a>
+                  </div>
+                  <div className="col-md-3">{trade.lookingfor}</div>
+                  <div className="col-md-3">{trade.tradingwith}</div>
+                  <div className="col-md-3">{trade.traderID}</div>
                 </div>
-                <div className="col-md-3">{trade.lookingfor}</div>
-                <div className="col-md-3">{trade.tradingwith}</div>
-                <div className="col-md-3">{trade.traderid}</div>
-              </div>
+
+                <div className="row" key={trade.uuid}>
+                  <div className="col-md-3"></div>
+                  <div className="col-md-3">
+                    <img
+                      key={trade.lookingfor}
+                      src={`/media/A1/${trade.LFURI}`}
+                      alt={`Card ${trade.lookingfor}`}
+                      className="img-fluid"
+                    />
+                  </div>
+                  <div className="col-md-3">
+                    <img
+                      key={trade.tradingwith}
+                      src={`/media/A1/${trade.TWURI}`}
+                      alt={`Card ${trade.tradingwith}`}
+                      className="img-fluid"
+                    />
+                  </div>
+                </div>
+              </>
             ))}
         </div>
       )}
-      <div className="row">
-        <div className="col-md-6"></div>
-        <div className="col-md-6"></div>
-      </div>
     </div>
   );
 };

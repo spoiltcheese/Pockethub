@@ -81,19 +81,19 @@ const MyTrades = () => {
                   <div className="row" key={trade.uuid}>
                     <div className="col-md-3"></div>
                     <div className="col-md-3">
-                      URI: {trade.LFURI}
                       <img
                         key={trade.lookingfor}
                         src={`/media/A1/${trade.LFURI}`}
                         alt={`Card ${trade.lookingfor}`}
+                        className="img-fluid"
                       />
                     </div>
                     <div className="col-md-3">
-                      URI: {trade.TWURI}
                       <img
                         key={trade.tradingwith}
                         src={`/media/A1/${trade.TWURI}`}
                         alt={`Card ${trade.tradingwith}`}
+                        className="img-fluid"
                       />
                     </div>
                   </div>

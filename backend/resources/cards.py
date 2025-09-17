@@ -56,7 +56,36 @@ def find_filtered_cards():
     try:
         conn, cursor = get_cursor()
         inputs = request.get_json()
-        cursor.execute("SELECT * FROM cards WHERE cardrarity = %s", (inputs['rarity'],))
+        cursor.execute("""
+                        SELECT * FROM "cards" c 
+                        JOIN media m on m."id" = c."id"
+                        WHERE cardrarity = %s
+                        """, (inputs['rarity'],))
+        result = cursor.fetchall()
+
+        return jsonify(result), 200
+
+    except SyntaxError as err:
+        return jsonify({'status': 'error'}), 400
+
+    except Exception as err:
+        return jsonify({'status': 'error'}), 400
+
+
+    finally:
+        release_connection(conn)
+
+
+@cards.route('/single_card_media' , methods=['POST'])
+def find_one_card_media():
+    conn = None
+    try:
+        conn, cursor = get_cursor()
+        inputs = request.get_json()
+        cursor.execute("""
+                        SELECT * FROM media
+                        WHERE "id" = %s
+                        """, (inputs['cardID'],))
         result = cursor.fetchall()
 
         return jsonify(result), 200
