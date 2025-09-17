@@ -14,19 +14,45 @@ const NewTrade = () => {
 
   const [selectedRarityLF, setSelectedRarityLF] = useState("None");
   const [selectedValueLF, setSelectedValueLF] = useState("None");
-
   const [selectedValueTW, setSelectedValueTW] = useState("None");
+
+  const [LFID, setLFID] = useState("");
+  const [TWID, setTWID] = useState("");
 
   const handleSelectRarityLF = (eventKey) => {
     setSelectedRarityLF(eventKey);
   };
 
+  // Helper to encode multiple values as a single eventKey (e.g., JSON string)
+  const encodeEventKey = (card, extra) =>
+    JSON.stringify({
+      cardname: card.cardname,
+      cardnumber: card.cardnumber,
+      ...extra,
+    });
+
+  // Helper to decode eventKey back to object
+  const decodeEventKey = (eventKey) => {
+    try {
+      return JSON.parse(eventKey);
+    } catch {
+      return { cardname: eventKey };
+    }
+  };
+
+  // Update handlers to accept multiple values
   const handleSelectValueLF = (eventKey) => {
-    setSelectedValueLF(eventKey);
+    const { cardname, cardnumber } = decodeEventKey(eventKey);
+    console.log(cardname, cardnumber);
+    setSelectedValueLF(cardname);
+    setLFID(cardnumber);
   };
 
   const handleSelectValueTW = (eventKey) => {
-    setSelectedValueTW(eventKey);
+    const { cardname, cardnumber } = decodeEventKey(eventKey);
+    console.log(cardname, cardnumber);
+    setSelectedValueTW(cardname);
+    setTWID(cardnumber);
   };
 
   const navigate = useNavigate();
@@ -71,18 +97,23 @@ const NewTrade = () => {
 
   async function addNewTrade() {
     const url = "http://localhost:5001/api/addTrade";
+    const payload = {
+      lookingfor: selectedValueLF,
+      tradingwith: selectedValueTW,
+      LFID: LFID,
+      TWID: TWID,
+      traderID: localStorage.getItem("currentUserID").replace(/"/g, ""),
+      traderName: localStorage.getItem("currentUserName").replace(/"/g, ""),
+    };
+
+    console.log("Submitting trade with payload:", payload);
     try {
       const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          lookingfor: selectedValueLF,
-          tradingwith: selectedValueTW,
-          traderID: localStorage.getItem("currentUserID").replace(/"/g, ""),
-          traderName: localStorage.getItem("currentUserName").replace(/"/g, ""),
-        }),
+        body: JSON.stringify(payload),
       });
 
       let data;
@@ -146,9 +177,15 @@ const NewTrade = () => {
       >
         {queryCardMedia.isSuccess &&
           queryCardMedia.data &&
-          queryCardMedia.data.map((card, id) => (
-            <Dropdown.Item key={id} eventKey={card.cardname}>
-              {card.cardname}
+          queryCardMedia.data.map((card, idx) => (
+            <Dropdown.Item
+              key={idx}
+              eventKey={encodeEventKey({
+                cardname: card.cardname,
+                cardnumber: card.cardnumber,
+              })}
+            >
+              {card.cardname}/{card.cardnumber}
             </Dropdown.Item>
           ))}
       </DropdownButton>
@@ -165,9 +202,15 @@ const NewTrade = () => {
       >
         {queryCardMedia.isSuccess &&
           queryCardMedia.data &&
-          queryCardMedia.data.map((card, id) => (
-            <Dropdown.Item key={id} eventKey={card.cardname}>
-              {card.cardname}
+          queryCardMedia.data.map((card, idx) => (
+            <Dropdown.Item
+              key={idx}
+              eventKey={encodeEventKey({
+                cardname: card.cardname,
+                cardnumber: card.cardnumber,
+              })}
+            >
+              {card.cardname}/{card.cardnumber}
             </Dropdown.Item>
           ))}
       </DropdownButton>

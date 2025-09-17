@@ -23,9 +23,21 @@ const SingleTrade = () => {
   }
 
   async function acceptTrade() {
-    const url = `http://localhost:5001/api/trades/acceptTrade/${tradeID}`;
+    const url = `http://localhost:5001/api/trades/acceptTrade`;
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage
+            .getItem("access")
+            .replace(/"/g, "")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          //gameID: localStorage.getItem("currentUserID").replace(/"/g, ""),
+          tradeID: tradeID,
+        }),
+      });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
@@ -39,9 +51,21 @@ const SingleTrade = () => {
   }
 
   async function completeTrade() {
-    const url = `http://localhost:5001/api/trades/completeTrade/${tradeID}`;
+    const url = `http://localhost:5001/api/trades/completeTrade`;
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage
+            .getItem("access")
+            .replace(/"/g, "")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          //gameID: localStorage.getItem("currentUserID").replace(/"/g, ""),
+          tradeID: tradeID,
+        }),
+      });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }

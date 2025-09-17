@@ -6,6 +6,8 @@ from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 
 import psycopg2
 
+
+#stretch goal: casting is hackish and has a performance penalty, but refactoring it will require a refactor of the database..
 trades= Blueprint('trades', __name__)
 @trades.route('/trades')
 # @jwt_required()
@@ -13,19 +15,19 @@ def find_all_trades():
     conn = None
     try:
         conn, cursor = get_cursor()
-        # cursor.execute("""select DISTINCT
-        #                 c1."cardname" as lookingfor_cardname,
-        #                 c2."cardname" as tradingwith_cardname,
-        #                 u."gameid" as "traderID",
-        #                 u."name" as "traderName"
-        #                 from "trades" t
-        #                 join cards c1 on c1.cardnumber = t.lookingfor
-        #                 join cards c2 on c2.cardnumber = t.tradingwith
-        #                 join "auth" u on u."gameid" = t."traderid"
-        #                 """)
-
-        cursor.execute("""
-                        select DISTINCT * from trades
+        cursor.execute("""select DISTINCT
+                        c1."cardname" as lookingfor,
+                        c2."cardname" as tradingwith,
+                        u."gameid" as "traderID",
+                        u."name" as "traderName",
+                        m1.uri as "LFURI",
+                        m2.uri as "TWURI"
+                        from "trades" t
+                        join cards c1 on c1.cardnumber = t."lookingforID"
+                        join cards c2 on c2.cardnumber = t."tradingwithID"
+                        join "auth" u on u."gameid" = t."traderID"
+                        join "media" m1 on m1."id"::VARCHAR = t."lookingforID"
+                        join "media" m2 on m2."id"::VARCHAR = t."tradingwithID"
                         """)
 
         result = cursor.fetchall()
@@ -50,8 +52,20 @@ def find_user_trades():
         conn, cursor = get_cursor()
         inputs = request.get_json()
         cursor.execute("""
-                        select DISTINCT * FROM trades
-                        where "traderid" = %s
+                        select DISTINCT
+                        c1."cardname" as lookingfor,
+                        c2."cardname" as tradingwith,
+                        u."gameid" as "traderID",
+                        u."name" as "traderName",
+                        m1.uri as "LFURI",
+                        m2.uri as "TWURI"
+                        from "trades" t
+                        join cards c1 on c1.cardnumber = t."lookingforID"
+                        join cards c2 on c2.cardnumber = t."tradingwithID"
+                        join "auth" u on u."gameid" = t."traderID"
+                        join "media" m1 on m1."id"::VARCHAR = t."lookingforID"
+                        join "media" m2 on m2."id"::VARCHAR = t."tradingwithID"
+                        where "traderID" = %s
                         """,
                        (inputs['gameID'],))
         result = cursor.fetchall()
@@ -101,9 +115,9 @@ def add_trade():
         #TODO: add pending status
         cursor.execute(
             """
-            INSERT INTO trades (lookingfor, tradingwith, traderid) VALUES (%s, %s, %s)
+            INSERT INTO trades ("lookingfor", "tradingwith", "traderID", "lookingforID", "tradingwithID") VALUES (%s, %s, %s, %s, %s)
             """,
-            (inputs['lookingfor'], inputs['tradingwith'], inputs['traderID']))
+            (inputs['lookingfor'], inputs['tradingwith'], inputs['traderID'], inputs['LFID'], inputs['TWID']))
 
         # Check if the row was actually inserted
         print(f"Rows affected: {cursor.rowcount}")
@@ -204,7 +218,7 @@ def accept_trade():
                         SET "status" = 'ACCEPTED', "tradeeid" = %s
                         where "uuid" = %s
                         """,
-                       (claims["gameID"],inputs["tradeid"]))
+                       (claims["gameID"],inputs["tradeID"]))
 
         print(f"Rows affected: {cursor.rowcount}")
 

@@ -13,6 +13,9 @@ const MyTrades = () => {
       const res = await fetch(url, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${localStorage
+            .getItem("access")
+            .replace(/"/g, "")}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -39,7 +42,7 @@ const MyTrades = () => {
           throw "an unknown error has occurred, please try again later";
         }
       }
-
+      console.dir(data);
       return data;
     } catch (error) {
       console.error(error.message || error);
@@ -53,32 +56,53 @@ const MyTrades = () => {
   });
 
   return (
-    <div className="container">
-      {currentUser && <h2>Your User ID: {currentUser}</h2>}
-      <div className="row">
-        <div className="col-md-3">Looking for:</div>
-        <div className="col-md-3">Cards available to trade:</div>
-      </div>
-
-      {queryAllTrades.isSuccess && (
-        <div>
-          {queryAllTrades.data &&
-            queryAllTrades.data.map((trade) => (
-              <div className="row" key={trade.uuid}>
-                <div className="col-md-3">
-                  <a href={`/trade/${trade.uuid}`}>Go to trade</a>
-                </div>
-                <div className="col-md-3">{trade.lookingfor}</div>
-                <div className="col-md-3">{trade.tradingwith}</div>
-              </div>
-            ))}
+    <>
+      <div className="container">
+        {currentUser && <h2>Your User ID: {currentUser}</h2>}
+        <div className="row">
+          <div className="col-md-3">&nbsp;</div>
+          <div className="col-md-3">Looking for:</div>
+          <div className="col-md-3">Cards available to trade:</div>
         </div>
-      )}
-      <div className="row">
-        <div className="col-md-6"></div>
-        <div className="col-md-6"></div>
+
+        {queryAllTrades.isSuccess && (
+          <div>
+            {queryAllTrades.data &&
+              queryAllTrades.data.map((trade) => (
+                <>
+                  <div className="row" key={trade.uuid}>
+                    <div className="col-md-3">
+                      <a href={`/trade/${trade.uuid}`}>Go to trade</a>
+                    </div>
+                    <div className="col-md-3">{trade.lookingfor}</div>
+                    <div className="col-md-3">{trade.tradingwith}</div>
+                  </div>
+
+                  <div className="row" key={trade.uuid}>
+                    <div className="col-md-3"></div>
+                    <div className="col-md-3">
+                      URI: {trade.LFURI}
+                      <img
+                        key={trade.lookingfor}
+                        src={`/media/A1/${trade.LFURI}`}
+                        alt={`Card ${trade.lookingfor}`}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      URI: {trade.TWURI}
+                      <img
+                        key={trade.tradingwith}
+                        src={`/media/A1/${trade.TWURI}`}
+                        alt={`Card ${trade.tradingwith}`}
+                      />
+                    </div>
+                  </div>
+                </>
+              ))}
+          </div>
+        )}
       </div>
-    </div>
+    </>
   );
 };
 
