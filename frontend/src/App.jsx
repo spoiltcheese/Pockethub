@@ -14,6 +14,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import SingleTrade from "./pages/SingleTrade";
 import AdminRoute from "./components/AdminRoute";
 import AllUsers from "./pages/AllUsers";
+import Footer from "./components/Footer";
 
 function App() {
   const [accessToken, setAccessToken] = useState(""); // Access token state
@@ -22,7 +23,7 @@ function App() {
   const [role, setRole] = useState(""); // User role state
 
   return (
-    <div className="container">
+    <>
       <Suspense fallback={<p>Loading...</p>}>
         <UserContext.Provider
           value={{
@@ -70,9 +71,11 @@ function App() {
               }
             />
           </Routes>
+          {/*TODO: add footer
+           <Footer /> */}
         </UserContext.Provider>
       </Suspense>
-    </div>
+    </>
   );
 }
 

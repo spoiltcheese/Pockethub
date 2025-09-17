@@ -201,12 +201,12 @@ const NewTrade = () => {
   });
 
   const queryCardMediaLF = useQuery({
-    queryKey: ["carMediaLF", selectedRarityLF],
+    queryKey: ["cardMediaLF", selectedRarityLF, LFID],
     queryFn: () => getMedia(LFID),
   });
 
   const queryCardMediaTW = useQuery({
-    queryKey: ["carMediaYW", selectedRarityLF],
+    queryKey: ["cardMediaTW", selectedRarityLF, TWID],
     queryFn: () => getMedia(TWID),
   });
 
@@ -272,7 +272,7 @@ const NewTrade = () => {
                     cardnumber: card.cardnumber,
                   })}
                 >
-                  {card.cardname}/{card.cardnumber}
+                  {card.cardname}
                 </Dropdown.Item>
               ))}
           </DropdownButton>
