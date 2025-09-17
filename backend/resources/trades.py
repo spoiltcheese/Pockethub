@@ -195,14 +195,16 @@ def accept_trade():
         conn, cursor = get_cursor()
         inputs = request.get_json()
 
-        print(f"{inputs['tradeegameid']}")
+        claims = get_jwt()
+
+        print(f"{claims["gameID"]}")
 
         cursor.execute("""
                         UPDATE trades
                         SET "status" = 'ACCEPTED', "tradeeid" = %s
                         where "uuid" = %s
                         """,
-                       (inputs["tradeegameid"],inputs["tradeid"]))
+                       (claims["gameID"],inputs["tradeid"]))
 
         print(f"Rows affected: {cursor.rowcount}")
 
@@ -246,10 +248,12 @@ def accept_trade():
 
 @trades.route('/trades/completeTrade/' , methods=['POST'])
 @jwt_required()
-def confirm_trade():
+def complete_trade():
     conn = None
     try:
-        email = get_jwt_identity()
+        claims = get_jwt()
+
+        print(f"{claims["gameID"]}")
 
         inputs = request.get_json()
 
@@ -258,7 +262,7 @@ def confirm_trade():
                         from trades
                         where "traderid" = %s or "tradeeid" = %s
                         """,
-                       (inputs['gameID'],inputs['gameID']))
+                       (claims["gameID"],claims["gameID"]))
         result = cursor.fetchall()
 
         if (cursor.rowcount != 0):
