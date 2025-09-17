@@ -2,7 +2,7 @@ from flask import request, jsonify, Blueprint
 from db.db_pool import get_cursor, release_connection
 from marshmallow import ValidationError
 from validators.tools import AddOneToolsSchema
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 
 import psycopg2
 
@@ -160,7 +160,7 @@ def find_single_trades(trade_id):
 
 
 @trades.route('/trades/<trade_id>' , methods=['POST'])
-# @jwt_required()
+@jwt_required()
 def find_single_trade_filtered(trade_id):
     conn = None
     try:
@@ -186,23 +186,32 @@ def find_single_trade_filtered(trade_id):
     finally:
         release_connection(conn)
 
-@trades.route('/trades/acceptTrade/<trade_id>')
-# @jwt_required()
-def accept_trade(trade_id):
+@trades.route('/trades/acceptTrade' , methods=['POST'])
+@jwt_required()
+def accept_trade():
     conn = None
+
     try:
         conn, cursor = get_cursor()
-        print(f"Accepted trade: {trade_id}")
+        inputs = request.get_json()
+
+        print(f"{inputs['tradeegameid']}")
+
         cursor.execute("""
                         UPDATE trades
-                        SET "status" = 'ACCEPTED'
+                        SET "status" = 'ACCEPTED', "tradeeid" = %s
                         where "uuid" = %s
                         """,
-                       (trade_id,))
+                       (inputs["tradeegameid"],inputs["tradeid"]))
+
+        print(f"Rows affected: {cursor.rowcount}")
+
+        if cursor.rowcount == 0:
+            print("No rows were updated - check if trade exists and UUID is correct")
+
         conn.commit()
 
         return jsonify(status='ok', msg='status update successful'), 200
-
 
     except psycopg2.Error as db_err:  # Catch database-specific errors
 
@@ -236,20 +245,31 @@ def accept_trade(trade_id):
 
 
 @trades.route('/trades/completeTrade/<trade_id>')
-# @jwt_required()
+@jwt_required()
 def confirm_trade(trade_id):
     conn = None
     try:
+        email = get_jwt_identity()
         conn, cursor = get_cursor()
-        cursor.execute("""
-                        UPDATE trades
-                        SET "status" = 'COMPLETED'
-                        where "uuid" = %s
+        cursor.execute("""select email *
+                        from auth
+                        where "gameID" = %s
                         """,
                        (trade_id,))
-        conn.commit()
+        result = cursor.fetchall()
 
-        return jsonify(status='ok', msg='status update successful'), 200
+        if (result['email'] == email):
+            cursor.execute("""
+                            UPDATE trades
+                            SET "status" = 'COMPLETED'
+                            where "uuid" = %s
+                            """,
+                       (trade_id,))
+            conn.commit()
+            return jsonify(status='ok', msg='status update successful'), 200
+
+        else:
+            return jsonify(status='error', msg='unauthorised'), 400
 
     except SyntaxError as err:
         return jsonify({'status': 'error'}), 400

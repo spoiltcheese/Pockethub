@@ -14,8 +14,6 @@ def register():
     cursor.execute("SELECT uuid FROM auth WHERE email = %s", (inputs['email'],))
     result = cursor.fetchone()
 
-
-
     if result:
         return jsonify(status='error', msg='Email already registered')
 
@@ -66,14 +64,12 @@ def refresh():
 
     return jsonify(status='ok', access_token=access_token), 200
 
-
-##TODO: protect this endpoint
 @auth.route('/users')
-#@jwt_required()
+@jwt_required()
 def get_users():
-    #claims = get_jwt()
-    #if claims['role'] != 'admin':
-    #    return jsonify(status='error', msg='Unauthorised'), 401
+    claims = get_jwt()
+    if claims['role'] != 'admin':
+       return jsonify(status='error', msg='Unauthorised'), 401
 
     conn = None
     try:
