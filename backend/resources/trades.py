@@ -244,38 +244,63 @@ def accept_trade():
         release_connection(conn)
 
 
-@trades.route('/trades/completeTrade/<trade_id>')
+@trades.route('/trades/completeTrade/' , methods=['POST'])
 @jwt_required()
-def confirm_trade(trade_id):
+def confirm_trade():
     conn = None
     try:
         email = get_jwt_identity()
+
+        inputs = request.get_json()
+
         conn, cursor = get_cursor()
-        cursor.execute("""select email *
-                        from auth
-                        where "gameID" = %s
+        cursor.execute("""select *
+                        from trades
+                        where "traderid" = %s or "tradeeid" = %s
                         """,
-                       (trade_id,))
+                       (inputs['gameID'],inputs['gameID']))
         result = cursor.fetchall()
 
-        if (result['email'] == email):
+        if (cursor.rowcount != 0):
             cursor.execute("""
                             UPDATE trades
                             SET "status" = 'COMPLETED'
                             where "uuid" = %s
                             """,
-                       (trade_id,))
+                       (inputs['tradeID'],))
             conn.commit()
             return jsonify(status='ok', msg='status update successful'), 200
 
         else:
             return jsonify(status='error', msg='unauthorised'), 400
 
-    except SyntaxError as err:
-        return jsonify({'status': 'error'}), 400
+    except psycopg2.Error as db_err:  # Catch database-specific errors
+
+        print(f"Database error: {db_err}")
+
+        if conn:
+            conn.rollback()
+
+        return jsonify({'status': 'error', "message": str(db_err)}), 400
+
+
+
+    except KeyError as key_err:
+
+        print(f"Missing key in input: {key_err}")
+
+        return jsonify({'status': 'error', "message": f"Missing required field: {key_err}"}), 400
+
+
 
     except Exception as err:
-        return jsonify({'status': 'error'}), 400
+
+        print(f"General error: {err}")
+
+        if conn:
+            conn.rollback()
+
+        return jsonify({'status': 'error', "message": str(err)}), 400
 
 
     finally:
