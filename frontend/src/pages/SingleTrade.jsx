@@ -17,10 +17,9 @@ const SingleTrade = () => {
       }
 
       const result = await response.json();
-      console.dir(result);
+
       return result;
     } catch (error) {
-      console.error(error.message);
       return [];
     }
   }
@@ -47,10 +46,9 @@ const SingleTrade = () => {
       }
 
       const result = await response.json();
-      console.dir(result);
+
       return result;
     } catch (error) {
-      console.error(error.message);
       return [];
     }
   }
@@ -79,7 +77,6 @@ const SingleTrade = () => {
       const result = await response.json();
       return result;
     } catch (error) {
-      console.error(error.message);
       return [];
     }
   }

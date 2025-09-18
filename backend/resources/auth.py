@@ -120,8 +120,6 @@ def change_details():
 
     inputs = request.get_json()
 
-    print(identity)
-
     try:
         conn, cursor = get_cursor()
         cursor.execute("SELECT * FROM auth WHERE email = %s", (identity,))

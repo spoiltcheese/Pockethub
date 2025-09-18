@@ -55,7 +55,6 @@ const Login = () => {
       navigate("/mytrades");
       return data;
     } catch (error) {
-      console.error(error.message);
       return [];
     }
   };

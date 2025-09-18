@@ -48,7 +48,6 @@ const ChangeUserDetails = () => {
       }
       return data;
     } catch (error) {
-      //console.error(error.message);
       return [];
     }
   };
@@ -79,10 +78,9 @@ const ChangeUserDetails = () => {
           throw "an unknown error has occurred, please try again later";
         }
       }
-      console.log(data);
+
       return data;
     } catch (error) {
-      console.error(error.message);
       return [];
     }
   };
@@ -101,7 +99,6 @@ const ChangeUserDetails = () => {
 
   useEffect(() => {
     if (currentID.data) {
-      console.log(currentID.data.gameid);
       setGameIDInput(currentID.data.gameid);
     }
   }, [currentID.data]);
