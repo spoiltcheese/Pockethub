@@ -67,21 +67,16 @@ def find_filtered_cards():
 
     except psycopg2.Error as db_err:  # Catch database-specific errors
 
-        print(f"Database error: {db_err}")
-
         if conn:
             conn.rollback()
 
         return jsonify({'status': 'error', "message": str(db_err)}), 400
 
     except KeyError as key_err:
-        print(f"Missing key in input: {key_err}")
         return jsonify({'status': 'error', "message": f"Missing required field: {key_err}"}), 400
 
 
     except Exception as err:
-
-        print(f"General error: {err}")
 
         if conn:
             conn.rollback()

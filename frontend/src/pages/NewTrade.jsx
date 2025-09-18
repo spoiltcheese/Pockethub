@@ -51,23 +51,19 @@ const NewTrade = () => {
   // Update handlers to accept multiple values
   const handleSelectValueLF = (eventKey) => {
     const { cardname, cardnumber } = decodeEventKey(eventKey);
-    console.log(cardname, cardnumber);
+
     setSelectedValueLF(cardname);
     setLFID(cardnumber);
   };
 
   const handleSelectValueTW = (eventKey) => {
     const { cardname, cardnumber } = decodeEventKey(eventKey);
-    console.log(cardname, cardnumber);
+
     setSelectedValueTW(cardname);
     setTWID(cardnumber);
   };
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log(`Selected rarity changed to: ${selectedRarityLF}`);
-  }, [selectedRarityLF]);
 
   const queryClient = useQueryClient();
 
@@ -107,7 +103,6 @@ const NewTrade = () => {
   async function getMedia(id) {
     const url = `${import.meta.env.VITE_API_URL}/api/single_card_media`;
     try {
-      console.log(id);
       const res = await fetch(url, {
         method: "POST",
         headers: {

@@ -43,7 +43,6 @@ const Login = () => {
       const decoded = jwtDecode(data.access_token);
       userCtx.setAccessToken(data.access_token);
       if (decoded) {
-        console.log(decoded);
         localStorage.setItem("currentUserID", JSON.stringify(decoded.gameID));
         localStorage.setItem("currentUserName", JSON.stringify(decoded.name));
         localStorage.setItem("refresh", JSON.stringify(data.refresh_token));

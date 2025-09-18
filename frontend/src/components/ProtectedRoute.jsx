@@ -4,7 +4,6 @@ import { Navigate } from "react-router";
 
 const ProtectedRoute = (props) => {
   const userCtx = useContext(UserContext);
-  //const isAuthenticated = userCtx.accessToken.length > 0;
   const currentUserID = localStorage.getItem("currentUserID");
 
   if (!currentUserID) {

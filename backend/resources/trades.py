@@ -76,23 +76,16 @@ def find_user_trades():
 
 
     except psycopg2.Error as db_err:  # Catch database-specific errors
-
-        print(f"Database error: {db_err}")
-
         if conn:
             conn.rollback()
 
         return jsonify({'status': 'error', "message": str(db_err)}), 400
 
     except KeyError as key_err:
-        print(f"Missing key in input: {key_err}")
         return jsonify({'status': 'error', "message": f"Missing required field: {key_err}"}), 400
 
 
     except Exception as err:
-
-        print(f"General error: {err}")
-
         if conn:
             conn.rollback()
 
@@ -127,7 +120,7 @@ def add_trade():
 
 
         if not trader_result:
-            print("No trader found with that gameid")
+
             return jsonify(status='error', msg='Invalid traderID'), 400
 
         trader_uuid = trader_result['uuid']
@@ -147,17 +140,17 @@ def add_trade():
         return jsonify(status='ok', msg='addition successful'), 200
 
     except psycopg2.Error as db_err:  # Catch database-specific errors
-        print(f"Database error: {db_err}")
+
         if conn:
             conn.rollback()
         return jsonify({'status': 'error', "message": str(db_err)}), 400
 
     except KeyError as key_err:
-        print(f"Missing key in input: {key_err}")
+
         return jsonify({'status': 'error', "message": f"Missing required field: {key_err}"}), 400
 
     except Exception as err:
-        print(f"General error: {err}")
+
         if conn:
             conn.rollback()
         return jsonify({'status': 'error', "message": str(err)}), 400
@@ -274,18 +267,12 @@ def accept_trade():
                         """,
                        (claims["gameID"],inputs["tradeID"], tradee_uuid))
 
-        print(f"Rows affected: {cursor.rowcount}")
-
-        if cursor.rowcount == 0:
-            print("No rows were updated - check if trade exists and UUID is correct")
 
         conn.commit()
 
         return jsonify(status='ok', msg='status update successful'), 200
 
     except psycopg2.Error as db_err:  # Catch database-specific errors
-
-        print(f"Database error: {db_err}")
 
         if conn:
             conn.rollback()
@@ -295,14 +282,12 @@ def accept_trade():
 
     except KeyError as key_err:
 
-        print(f"Missing key in input: {key_err}")
 
         return jsonify({'status': 'error', "message": f"Missing required field: {key_err}"}), 400
 
 
     except Exception as err:
 
-        print(f"General error: {err}")
 
         if conn:
             conn.rollback()
@@ -321,7 +306,7 @@ def complete_trade():
     try:
         claims = get_jwt()
 
-        print(f"{claims["gameID"]}")
+
 
         inputs = request.get_json()
 
@@ -348,7 +333,7 @@ def complete_trade():
 
     except psycopg2.Error as db_err:  # Catch database-specific errors
 
-        print(f"Database error: {db_err}")
+
 
         if conn:
             conn.rollback()
@@ -359,15 +344,11 @@ def complete_trade():
 
     except KeyError as key_err:
 
-        print(f"Missing key in input: {key_err}")
-
         return jsonify({'status': 'error', "message": f"Missing required field: {key_err}"}), 400
 
 
 
     except Exception as err:
-
-        print(f"General error: {err}")
 
         if conn:
             conn.rollback()

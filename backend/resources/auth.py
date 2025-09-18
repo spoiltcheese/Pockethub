@@ -19,12 +19,6 @@ def register():
 
     hashed_password = bcrypt.hashpw(inputs['password'].encode('utf-8'), bcrypt.gensalt())
 
-    print("Values being inserted:")
-    print(f"Email: '{inputs['email']}'")
-    print(f"Name: '{inputs['name']}'")
-    print(f"Hash: '{hashed_password.decode('utf-8')}'")
-    print(f"GameID: '{inputs['gameID']}'")
-
     cursor.execute(
         "INSERT INTO auth (email, name, hash, gameID) VALUES (%s, %s, %s, %s)",
         (inputs['email'], inputs['name'], hashed_password.decode('utf-8'), inputs['gameID']))
