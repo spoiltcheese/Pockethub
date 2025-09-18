@@ -20,7 +20,7 @@ The literal and graphical information presented on this website about the Pokém
 
 ## Backend
 
-- DB= the name of the database
+- DB : the name of the database
 - DB_HOST : the url of the server (or localhost)
 - DB_PASSWORD
 - DB_PORT : the default port for postgresSQL is 5432
@@ -61,5 +61,5 @@ The literal and graphical information presented on this website about the Pokém
 The stretch goals will improve on the current known limitations of the website, including
 
 - Admins having more power over users
-- The ability to change gameID and password after account creation
+- The ability to change gameID and password after account creation (this has been addressed in a dev build)
 - Not being able to trade with yourself
