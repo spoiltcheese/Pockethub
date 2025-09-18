@@ -8,7 +8,7 @@ CREATE TABLE "public"."trades" (
     "tradeeUUID" uuid,
     "lookingfor" varchar(64),
     "tradingwith" varchar(64),
-    "status" varchar(32),
+    "status" varchar(32) DEFAULT 'PENDING',
     "lookingforID" varchar(16),
     "tradingwithID" varchar(16),
     PRIMARY KEY ("uuid"),
