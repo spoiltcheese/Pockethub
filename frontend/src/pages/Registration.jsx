@@ -42,7 +42,6 @@ const Registration = () => {
 
       return data;
     } catch (error) {
-      console.error(error.message);
       return [];
     }
   };

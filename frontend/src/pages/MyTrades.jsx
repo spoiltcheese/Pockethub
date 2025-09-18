@@ -45,10 +45,9 @@ const MyTrades = () => {
           throw "an unknown error has occurred, please try again later";
         }
       }
-      console.dir(data);
+
       return data;
     } catch (error) {
-      console.error(error.message || error);
       return [];
     }
   }

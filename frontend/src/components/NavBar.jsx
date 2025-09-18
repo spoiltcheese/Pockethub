@@ -59,6 +59,14 @@ const NavBar = () => {
                   </Link>
                 ) : null}
               </li>
+
+              <li className="nav-item">
+                {localStorage.getItem("currentUserID") ? (
+                  <Link className="nav-link" to="/details">
+                    Details
+                  </Link>
+                ) : null}
+              </li>
               {userCtx.role === "admin" ? (
                 <li className="nav-item">
                   <Link className="nav-link" to="/allusers">
