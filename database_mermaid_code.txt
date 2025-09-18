@@ -1,0 +1,38 @@
+erDiagram
+    auth ||--o{ trades : has
+    trades }|--|{cards : has
+    cards }|--|{media : has
+
+    auth {
+        uuid uuid
+        varchar email
+        varchar name
+        varchar hash
+        varchar gameid
+        varchar role
+    }
+    media {
+        varchar id
+        varchar cardset
+        varchar uri
+
+    }
+    cards{
+        varchar cardset
+        varchar cardnumber
+        varchar cardname
+        varchar cardtype
+        varchar cardrarity
+    }
+    trades{
+        uuid uuid 
+        varchar traderID
+        uuid traderUUID
+        varchar tradeeID
+        uuid tradeeID
+        varchar lookingfor
+        varchar tradingwith
+        varchar status
+        varchar lookingforID
+        varchar tradingwithID     
+     }
