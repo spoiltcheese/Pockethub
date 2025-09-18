@@ -27,6 +27,13 @@ The literal and graphical information presented on this website about the Pokém
 - DB_USER
 - JWT_SECRET_KEY
 
+# Database Deployment
+
+Run the SQL in `/sql` files in this order: auth, cards, media, trade. Do _not_ moidify the data in cards and media.
+
+auth and trades can be optionally seeded with data from
+the folder `sql/seed_data`.
+
 # React Component Tree
 
 ![React](React_Diagram.png)
