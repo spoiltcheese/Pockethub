@@ -109,23 +109,40 @@ def add_trade():
         conn, cursor = get_cursor()
         inputs = request.get_json()
 
-        print("Values being inserted:")
-        print(f"lookingfor: '{inputs['lookingfor']}'")
-        print(f"tradingwith: '{inputs['tradingwith']}'")
-        print(f"GameID: '{inputs['traderID']}'")
+        required_fields = ['lookingfor', 'tradingwith', 'traderID', 'LFID', 'TWID']
+        missing_fields = [field for field in required_fields if field not in inputs]
 
-        #TODO: add pending status
+        if missing_fields:
+            return jsonify(status='error', msg=f'Missing required fields: {missing_fields}'), 400
+
         cursor.execute(
             """
-            INSERT INTO trades ("lookingfor", "tradingwith", "traderID", "lookingforID", "tradingwithID") VALUES (%s, %s, %s, %s, %s)
+            SELECT "uuid" FROM "auth" WHERE "gameid" = %s
             """,
-            (inputs['lookingfor'], inputs['tradingwith'], inputs['traderID'], inputs['LFID'], inputs['TWID']))
+            (inputs['traderID'],)
+        )
 
-        # Check if the row was actually inserted
-        print(f"Rows affected: {cursor.rowcount}")
+        trader_result = cursor.fetchone()
+
+
+
+        if not trader_result:
+            print("No trader found with that gameid")
+            return jsonify(status='error', msg='Invalid traderID'), 400
+
+        trader_uuid = trader_result['uuid']
+
+
+        if not trader_result:
+            return jsonify(status='error', msg='Invalid traderID'), 400
+
+        cursor.execute(
+            """
+            INSERT INTO trades ("lookingfor", "tradingwith", "traderID", "traderUUID", "lookingforID", "tradingwithID") VALUES (%s, %s, %s, %s, %s, %s)
+            """,
+            (inputs['lookingfor'], inputs['tradingwith'], inputs['traderID'], trader_uuid, inputs['LFID'], inputs['TWID']))
 
         conn.commit()
-        print("Transaction committed successfully")
 
         return jsonify(status='ok', msg='addition successful'), 200
 
@@ -239,14 +256,23 @@ def accept_trade():
 
         claims = get_jwt()
 
-        print(f"{claims["gameID"]}")
+        cursor.execute(
+            "SELECT uuid FROM auth WHERE gameid = %s",
+            (inputs['tradeID'],)
+        )
+        trader_result = cursor.fetchone()
+
+        if not trader_result:
+            return jsonify(status='error', msg='Invalid traderID'), 400
+
+        tradee_uuid = trader_result[0]
 
         cursor.execute("""
                         UPDATE trades
-                        SET "status" = 'ACCEPTED', "tradeeID" = %s
+                        SET "status" = 'ACCEPTED', "tradeeID" = %s, 'tradeeUUID' = %s
                         where "uuid" = %s
                         """,
-                       (claims["gameID"],inputs["tradeID"]))
+                       (claims["gameID"],inputs["tradeID"], tradee_uuid))
 
         print(f"Rows affected: {cursor.rowcount}")
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContex } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -95,6 +95,7 @@ const NewTrade = () => {
           throw "an unknown error has occurred, please try again later";
         }
       }
+      console.dir(data);
 
       return data;
     } catch (error) {
