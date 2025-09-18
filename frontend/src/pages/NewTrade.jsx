@@ -227,9 +227,14 @@ const NewTrade = () => {
     <Container>
       <Row>
         <Col>
+          <h2>Create a New Trade</h2>
+        </Col>
+      </Row>
+      <Row className="align-items-center">
+        <Col>
           <DropdownButton
             id="rarity-dropdown"
-            title={`Selected: ${
+            title={`Rarity: ${
               rarityNames[selectedRarityLF] || selectedRarityLF
             }`}
             onSelect={handleSelectRarityLF}
@@ -246,7 +251,7 @@ const NewTrade = () => {
         <Col>
           <DropdownButton
             id="filtered-cards-dropdown"
-            title={`Selected: ${selectedValueLF}`}
+            title={`Looking For: ${selectedValueLF}`}
             menuAlign="left"
             style={{ maxWidth: "100%" }}
             menuVariant="light"
@@ -271,7 +276,7 @@ const NewTrade = () => {
         <Col>
           <DropdownButton
             id="filtered-cards-dropdown"
-            title={`Selected: ${selectedValueTW}`}
+            title={`Trading With: ${selectedValueTW}`}
             menuAlign="left"
             style={{ maxWidth: "100%" }}
             menuVariant="light"
@@ -293,19 +298,14 @@ const NewTrade = () => {
           </DropdownButton>
         </Col>
 
-        <Col>
-          <Button
-            className="mt-3"
-            variant="primary"
-            type="submit"
-            onClick={addNewTrade}
-          >
+        <Col className="d-flex align-items-center justify-content-center">
+          <Button variant="primary" type="submit" onClick={addNewTrade}>
             Submit Trade
           </Button>
         </Col>
       </Row>
       <Row>
-        <Col> </Col>
+        <Col></Col>
         <Col>
           {queryCardMediaLF.isLoading && <p>Loading...</p>}
           {queryCardMediaLF.isError && <p>Error loading card media</p>}
@@ -324,17 +324,8 @@ const NewTrade = () => {
               <Image key={idx} src={`/media/A1/${card.uri}`} fluid></Image>
             ))}
         </Col>
-        <Col> </Col>
+        <Col></Col>
       </Row>
-
-      <style>{`
-            .dropdown-menu {
-                max-width: 100vw;
-                max-height: 50vh;
-                overflow-y: auto;
-                word-break: break-word;
-            }
-        `}</style>
     </Container>
   );
 };
