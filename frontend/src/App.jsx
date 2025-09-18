@@ -75,8 +75,8 @@ function App() {
               )
             }
           </Routes>
-          {/*TODO: add footer
-           <Footer /> */}
+
+          <Footer />
         </UserContext.Provider>
       </Suspense>
     </>
