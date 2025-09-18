@@ -61,5 +61,4 @@ The literal and graphical information presented on this website about the Pokém
 The stretch goals will improve on the current known limitations of the website, including
 
 - Admins having more power over users
-- The ability to change gameID and password after account creation
 - Not being able to trade with yourself
