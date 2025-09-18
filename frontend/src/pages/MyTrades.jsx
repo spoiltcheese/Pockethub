@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import UserContext from "../context/user";
 
 const MyTrades = () => {
+  const userContext = useContext(UserContext);
+
   const [currentUser, getCurrentUser] = useState(() => {
     const savedData = localStorage.getItem("currentUserID");
     return savedData ? savedData : "no User found";
@@ -59,6 +62,7 @@ const MyTrades = () => {
     <>
       <div className="container">
         {currentUser && <h2>Your User ID: {currentUser}</h2>}
+        {userContext.status && <h2>{userContext.status}</h2>}
         <div className="row">
           <div className="col-md-3">&nbsp;</div>
           <div className="col-md-3">Looking for:</div>
