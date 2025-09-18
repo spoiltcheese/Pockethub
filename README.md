@@ -20,7 +20,7 @@ The literal and graphical information presented on this website about the Pokém
 
 ## Backend
 
-- DB= the name of the database
+- DB : the name of the database
 - DB_HOST : the url of the server (or localhost)
 - DB_PASSWORD
 - DB_PORT : the default port for postgresSQL is 5432
