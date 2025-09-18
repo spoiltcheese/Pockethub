@@ -15,6 +15,7 @@ import SingleTrade from "./pages/SingleTrade";
 import AdminRoute from "./components/AdminRoute";
 import AllUsers from "./pages/AllUsers";
 import Footer from "./components/Footer";
+import Logout from "./components/Logout";
 
 function App() {
   const [accessToken, setAccessToken] = useState(""); // Access token state
@@ -74,8 +75,8 @@ function App() {
                 />
               )
             }
+            <Route path="/logout" element={<Logout />} />
           </Routes>
-
           <Footer />
         </UserContext.Provider>
       </Suspense>

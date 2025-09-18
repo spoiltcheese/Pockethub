@@ -68,40 +68,6 @@ const Login = () => {
     retry: false,
   });
 
-  //   const refreshAccessTokenMutation = useMutation({
-  //     mutationFn: async () => {
-  //       return await fetchData(`/auth/refresh`, "POST", {
-  //         refresh: localStorage.getItem("refresh"),
-  //       });
-  //     },
-  //     onSuccess: (data) => {
-  //       try {
-  //         authCtx.setAccessToken(data.access);
-  //         const decoded = jwtDecode(data.access);
-  //         if (decoded) {
-  //           authCtx.setUsername(decoded.username);
-  //           authCtx.setUserId(decoded.id);
-  //         }
-  //         navigate("/user");
-  //       } catch (e) {
-  //         console.error(e.message);
-  //       }
-  //     },
-  //   });
-
-  //   useEffect(() => {
-  //     // Auto login for users with refresh token in localStorage
-  //     const refresh = localStorage.getItem("refresh");
-  //     if (refresh && refresh !== "undefined") refreshAccessTokenMutation.mutate();
-  //   }, []);
-
-  const loginQuery = useMutation({
-    mutationFn: doLogin,
-    onSuccess: () => {
-      navigate("/mytrades");
-    },
-  });
-
   return (
     <div className="card col-sm-6 offset-sm-3" style={{ marginTop: "20px" }}>
       <div className="card-title text-center mt-4 mb-4">

@@ -66,7 +66,13 @@ const NavBar = () => {
                   </Link>
                 </li>
               ) : null}
-              \
+              <li className="nav-item">
+                {localStorage.getItem("currentUserID") ? (
+                  <Link className="nav-link" to="/logout">
+                    Logout
+                  </Link>
+                ) : null}
+              </li>
             </ul>
           </div>
         </nav>
