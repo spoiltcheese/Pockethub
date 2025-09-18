@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router";
+import UserContext from "../context/user";
 
 const NavBar = () => {
+  const userCtx = useContext(UserContext);
   return (
     <>
       <header>
@@ -53,15 +55,18 @@ const NavBar = () => {
               <li className="nav-item">
                 {localStorage.getItem("currentUserID") ? (
                   <Link className="nav-link" to="/mytrades">
-                    My Trades {`(${localStorage.getItem("currentUserID")})`}
+                    My Trades
                   </Link>
                 ) : null}
               </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/allusers">
-                  All Users
-                </Link>
-              </li>
+              {userCtx.role === "admin" ? (
+                <li className="nav-item">
+                  <Link className="nav-link" to="/allusers">
+                    All Users
+                  </Link>
+                </li>
+              ) : null}
+              \
             </ul>
           </div>
         </nav>

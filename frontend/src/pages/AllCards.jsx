@@ -5,7 +5,7 @@ const AllCards = () => {
   const queryClient = useQueryClient();
 
   async function getCardMedia() {
-    const url = "http://localhost:5001/api/card_media";
+    const url = `${import.meta.env.VITE_API_URL}/api/card_media`;
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -25,7 +25,7 @@ const AllCards = () => {
   });
 
   return (
-    <div>
+    <div className="container">
       {queryCardMedia.isSuccess && (
         <div>
           {queryCardMedia.data &&

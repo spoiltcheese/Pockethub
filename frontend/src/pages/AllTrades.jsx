@@ -5,7 +5,7 @@ const AllTrades = () => {
   const queryClient = useQueryClient();
 
   async function getAllTrades() {
-    const url = "http://localhost:5001/api/trades";
+    const url = `${import.meta.env.VITE_API_URL}/api/trades`;
     try {
       const response = await fetch(url);
       if (!response.ok) {

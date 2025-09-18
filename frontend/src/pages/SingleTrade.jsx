@@ -7,7 +7,7 @@ const SingleTrade = () => {
   const { tradeID } = useParams();
 
   async function getTrade() {
-    const url = `http://localhost:5001/api/trades/${tradeID}`;
+    const url = `${import.meta.env.VITE_API_URL}/api/trades/${tradeID}`;
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -24,7 +24,7 @@ const SingleTrade = () => {
   }
 
   async function acceptTrade() {
-    const url = `http://localhost:5001/api/trades/acceptTrade`;
+    const url = `${import.meta.env.VITE_API_URL}/api/trades/acceptTrade`;
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -53,7 +53,7 @@ const SingleTrade = () => {
   }
 
   async function completeTrade() {
-    const url = `http://localhost:5001/api/trades/completeTrade`;
+    const url = `${import.meta.env.VITE_API_URL}/api/trades/completeTrade`;
     try {
       const response = await fetch(url, {
         method: "POST",

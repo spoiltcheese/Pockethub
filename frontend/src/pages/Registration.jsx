@@ -56,38 +56,36 @@ const Registration = () => {
 
   return (
     <>
-      <div>
-        <div>
-          <div className="card-title text-center mt-4 mb-4">
-            <h3>Registration</h3>
-          </div>
-          <div className="card-body">
-            <label className="col-sm-3" htmlFor="username">
-              Username
-            </label>
-            <input
-              className="col-sm-9"
-              id="username"
-              value={usernameInput}
-              onChange={(event) => setUsernameInput(event.target.value)}
-            />
+      <div className="card text-center mt-4 mb-4">
+        <div className="card-title text-center mt-4 mb-4">
+          <h3>Registration</h3>
+        </div>
+        <div className="card-body">
+          <label className="col-sm-3" htmlFor="username">
+            Username
+          </label>
+          <input
+            className="col-sm-4"
+            id="username"
+            value={usernameInput}
+            onChange={(event) => setUsernameInput(event.target.value)}
+          />
 
-            <div>
-              {registerQuery.isError && JSON.stringify(registerQuery.error)}
-            </div>
+          <div>
+            {registerQuery.isError && JSON.stringify(registerQuery.error)}
           </div>
-          <div className="card-body">
-            <label className="col-sm-3" htmlFor="email">
-              Email
-            </label>
-            <input
-              className="col-sm-9"
-              type="email"
-              id="email"
-              value={emailInput}
-              onChange={(event) => setEmailInput(event.target.value)}
-            />
-          </div>
+        </div>
+        <div className="card-body">
+          <label className="col-sm-3" htmlFor="email">
+            Email
+          </label>
+          <input
+            className="col-sm-4"
+            type="email"
+            id="email"
+            value={emailInput}
+            onChange={(event) => setEmailInput(event.target.value)}
+          />
         </div>
 
         <div className="card-body">
@@ -95,7 +93,7 @@ const Registration = () => {
             Password
           </label>
           <input
-            className="col-sm-9"
+            className="col-sm-4"
             type="password"
             id="password"
             value={passwordInput}
@@ -108,7 +106,7 @@ const Registration = () => {
             GameID
           </label>
           <input
-            className="col-sm-9"
+            className="col-sm-4"
             type="text"
             id="gameID"
             value={gameIDInput}

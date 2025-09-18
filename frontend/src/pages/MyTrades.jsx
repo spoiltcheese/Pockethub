@@ -8,7 +8,7 @@ const MyTrades = () => {
   });
 
   async function getAllTrades() {
-    const url = "http://localhost:5001/api/myTrades";
+    const url = `${import.meta.env.VITE_API_URL}/api/myTrades`;
     try {
       const res = await fetch(url, {
         method: "POST",

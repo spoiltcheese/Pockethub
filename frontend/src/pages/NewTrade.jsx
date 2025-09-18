@@ -70,7 +70,7 @@ const NewTrade = () => {
   const queryClient = useQueryClient();
 
   async function getFilteredCards(rarity) {
-    const url = "http://localhost:5001/api/cards_filtered";
+    const url = `${import.meta.env.VITE_API_URL}/api/cards_filtered`;
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -102,7 +102,7 @@ const NewTrade = () => {
   }
 
   async function getMedia(id) {
-    const url = "http://localhost:5001/api/single_card_media";
+    const url = `${import.meta.env.VITE_API_URL}/api/single_card_media`;
     try {
       console.log(id);
       const res = await fetch(url, {
@@ -147,7 +147,7 @@ const NewTrade = () => {
   }, [TWID]);
 
   async function addNewTrade() {
-    const url = "http://localhost:5001/api/addTrade";
+    const url = `${import.meta.env.VITE_API_URL}/api/addTrade`;
     const payload = {
       lookingfor: selectedValueLF,
       tradingwith: selectedValueTW,

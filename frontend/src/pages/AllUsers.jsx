@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const AllUsers = () => {
   async function getAllUsers() {
-    const url = "http://localhost:5001/auth/users";
+    const url = `${import.meta.env.VITE_API_URL}/auth/users`;
     try {
       const response = await fetch(url);
       if (!response.ok) {
