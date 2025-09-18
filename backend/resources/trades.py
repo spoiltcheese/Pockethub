@@ -28,6 +28,7 @@ def find_all_trades():
                         join "auth" u on u."gameid" = t."traderID"
                         join "media" m1 on m1."id"::VARCHAR = t."lookingforID"
                         join "media" m2 on m2."id"::VARCHAR = t."tradingwithID"
+                        where status = 'PENDING'
                         """)
 
         result = cursor.fetchall()
@@ -58,7 +59,8 @@ def find_user_trades():
                         u."gameid" as "traderID",
                         u."name" as "traderName",
                         m1.uri as "LFURI",
-                        m2.uri as "TWURI"
+                        m2.uri as "TWURI",
+                        t."uuid" as "uuid"
                         from "trades" t
                         join cards c1 on c1.cardnumber = t."lookingforID"
                         join cards c2 on c2.cardnumber = t."tradingwithID"
@@ -153,8 +155,21 @@ def find_single_trades(trade_id):
     try:
         conn, cursor = get_cursor()
 
-        cursor.execute("""select DISTINCT *
+        cursor.execute("""                        
+                        select DISTINCT
+                        c1."cardname" as lookingfor,
+                        c2."cardname" as tradingwith,
+                        u."gameid" as "traderID",
+                        u."name" as "traderName",
+                        m1.uri as "LFURI",
+                        m2.uri as "TWURI",
+                        t."uuid" as "uuid"
                         from "trades" t
+                        join cards c1 on c1.cardnumber = t."lookingforID"
+                        join cards c2 on c2.cardnumber = t."tradingwithID"
+                        join "auth" u on u."gameid" = t."traderID"
+                        join "media" m1 on m1."id"::VARCHAR = t."lookingforID"
+                        join "media" m2 on m2."id"::VARCHAR = t."tradingwithID"
                         where t."uuid" = %s
                         """,
                        (trade_id,))
@@ -180,12 +195,25 @@ def find_single_trade_filtered(trade_id):
     try:
         conn, cursor = get_cursor()
         inputs = request.get_json()
-        cursor.execute("""select DISTINCT *
+
+        cursor.execute("""
+                        select DISTINCT
+                        c1."cardname" as lookingfor,
+                        c2."cardname" as tradingwith,
+                        u."gameid" as "traderID",
+                        u."name" as "traderName",
+                        m1.uri as "LFURI",
+                        m2.uri as "TWURI",
+                        t."uuid" as "uuid"
                         from "trades" t
+                        join cards c1 on c1.cardnumber = t."lookingforID"
+                        join cards c2 on c2.cardnumber = t."tradingwithID"
+                        join "auth" u on u."gameid" = t."traderID"
+                        join "media" m1 on m1."id"::VARCHAR = t."lookingforID"
+                        join "media" m2 on m2."id"::VARCHAR = t."tradingwithID"
                         where t."uuid" = %s
-                        and i."traderid" != %s
                         """,
-                       (trade_id,inputs['gameID']))
+                       (inputs['gameID'],))
         result = cursor.fetchall()
 
         return jsonify(result), 200
@@ -215,7 +243,7 @@ def accept_trade():
 
         cursor.execute("""
                         UPDATE trades
-                        SET "status" = 'ACCEPTED', "tradeeid" = %s
+                        SET "status" = 'ACCEPTED', "tradeeID" = %s
                         where "uuid" = %s
                         """,
                        (claims["gameID"],inputs["tradeID"]))

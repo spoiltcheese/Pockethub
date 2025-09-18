@@ -58,22 +58,40 @@ def find_filtered_cards():
         inputs = request.get_json()
         cursor.execute("""
                         SELECT * FROM "cards" c 
-                        JOIN media m on m."id" = c."id"
+                        JOIN media m on m."id"::VARCHAR = c."cardnumber"
                         WHERE cardrarity = %s
                         """, (inputs['rarity'],))
         result = cursor.fetchall()
 
         return jsonify(result), 200
 
-    except SyntaxError as err:
-        return jsonify({'status': 'error'}), 400
+    except psycopg2.Error as db_err:  # Catch database-specific errors
+
+        print(f"Database error: {db_err}")
+
+        if conn:
+            conn.rollback()
+
+        return jsonify({'status': 'error', "message": str(db_err)}), 400
+
+    except KeyError as key_err:
+        print(f"Missing key in input: {key_err}")
+        return jsonify({'status': 'error', "message": f"Missing required field: {key_err}"}), 400
+
 
     except Exception as err:
-        return jsonify({'status': 'error'}), 400
+
+        print(f"General error: {err}")
+
+        if conn:
+            conn.rollback()
+
+        return jsonify({'status': 'error', "message": str(err)}), 400
 
 
     finally:
         release_connection(conn)
+
 
 
 @cards.route('/single_card_media' , methods=['POST'])

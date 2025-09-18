@@ -64,7 +64,7 @@ const NewTrade = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    //console.log(`Selected rarity changed to: ${selectedRarity}`);
+    console.log(`Selected rarity changed to: ${selectedRarityLF}`);
   }, [selectedRarityLF]);
 
   const queryClient = useQueryClient();
@@ -198,17 +198,30 @@ const NewTrade = () => {
   const queryCardName = useQuery({
     queryKey: ["cardsByRarity", selectedRarityLF],
     queryFn: () => getFilteredCards(selectedRarityLF),
+    enabled: selectedRarityLF !== "None",
   });
 
   const queryCardMediaLF = useQuery({
     queryKey: ["cardMediaLF", selectedRarityLF, LFID],
     queryFn: () => getMedia(LFID),
+    enabled: !!LFID,
   });
 
   const queryCardMediaTW = useQuery({
     queryKey: ["cardMediaTW", selectedRarityLF, TWID],
     queryFn: () => getMedia(TWID),
+    enabled: !!TWID,
   });
+
+  // Map rarity codes to full names
+  const rarityNames = {
+    "1D": "1 Diamond",
+    "2D": "2 Diamond",
+    "3D": "3 Diamond",
+    "4D": "4 Diamond",
+    "1S": "1 Star",
+    None: "None",
+  };
 
   return (
     <Container>
@@ -216,16 +229,18 @@ const NewTrade = () => {
         <Col>
           <DropdownButton
             id="rarity-dropdown"
-            title={`Selected: ${selectedRarityLF}`}
+            title={`Selected: ${
+              rarityNames[selectedRarityLF] || selectedRarityLF
+            }`}
             onSelect={handleSelectRarityLF}
             menuAlign="left"
             style={{ maxWidth: "100%" }}
           >
-            <Dropdown.Item eventKey="1D">1 Diamond</Dropdown.Item>
-            <Dropdown.Item eventKey="2D">2 Diamond</Dropdown.Item>
-            <Dropdown.Item eventKey="3D">3 Diamond</Dropdown.Item>
-            <Dropdown.Item eventKey="4D">4 Diamond</Dropdown.Item>
-            <Dropdown.Item eventKey="1S">1 Star</Dropdown.Item>
+            <Dropdown.Item eventKey="1D">{rarityNames["1D"]}</Dropdown.Item>
+            <Dropdown.Item eventKey="2D">{rarityNames["2D"]}</Dropdown.Item>
+            <Dropdown.Item eventKey="3D">{rarityNames["3D"]}</Dropdown.Item>
+            <Dropdown.Item eventKey="4D">{rarityNames["4D"]}</Dropdown.Item>
+            <Dropdown.Item eventKey="1S">{rarityNames["1S"]}</Dropdown.Item>
           </DropdownButton>
         </Col>
         <Col>

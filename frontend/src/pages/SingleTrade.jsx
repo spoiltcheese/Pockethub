@@ -15,6 +15,7 @@ const SingleTrade = () => {
       }
 
       const result = await response.json();
+      console.dir(result);
       return result;
     } catch (error) {
       console.error(error.message);
@@ -43,6 +44,7 @@ const SingleTrade = () => {
       }
 
       const result = await response.json();
+      console.dir(result);
       return result;
     } catch (error) {
       console.error(error.message);
@@ -95,10 +97,31 @@ const SingleTrade = () => {
         <div>
           {queryTrade.data &&
             queryTrade.data.map((trade) => (
-              <div className="row" key={trade.id}>
-                <div className="col-md-3">{trade.lookingfor}</div>
-                <div className="col-md-3">{trade.tradingwith}</div>
-                <div className="col-md-3">{trade.traderid}</div>
+              <div key={trade.uuid}>
+                <div className="row">
+                  <div className="col-md-3">{trade.lookingfor}</div>
+                  <div className="col-md-3">{trade.tradingwith}</div>
+                  <div className="col-md-3">{trade.traderID}</div>
+                </div>
+                <div className="row">
+                  <div className="col-md-3">
+                    <img
+                      key={trade.lookingfor}
+                      src={`/media/A1/${trade.LFURI}`}
+                      alt={`Card ${trade.lookingfor}`}
+                      className="img-fluid"
+                    />
+                  </div>
+                  <div className="col-md-3">
+                    <img
+                      key={trade.tradingwith}
+                      src={`/media/A1/${trade.TWURI}`}
+                      alt={`Card ${trade.tradingwith}`}
+                      className="img-fluid"
+                    />
+                  </div>
+                  <div className="col-md-3"></div>
+                </div>
               </div>
             ))}
         </div>

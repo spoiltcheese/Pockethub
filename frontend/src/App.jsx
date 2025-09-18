@@ -61,15 +61,19 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
-            <Route
-              path="/allusers"
-              element={
-                <AdminRoute>
-                  <AllUsers />
-                </AdminRoute>
-              }
-            />
+            {
+              //only admin can see all users
+              role === "admin" && (
+                <Route
+                  path="/allusers"
+                  element={
+                    <AdminRoute>
+                      <AllUsers />
+                    </AdminRoute>
+                  }
+                />
+              )
+            }
           </Routes>
           {/*TODO: add footer
            <Footer /> */}
