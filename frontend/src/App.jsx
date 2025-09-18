@@ -22,7 +22,7 @@ function App() {
   const [username, setUsername] = useState("");
   const [gameID, setGameID] = useState("");
   const [role, setRole] = useState(""); // User role state
-
+  const [status, setStatus] = useState(""); // User status state
   return (
     <>
       <Suspense fallback={<p>Loading...</p>}>
@@ -36,6 +36,8 @@ function App() {
             setRole,
             gameID,
             setGameID,
+            status,
+            setStatus,
           }}
         >
           <NavBar />

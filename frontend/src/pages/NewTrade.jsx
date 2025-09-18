@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContex } from "react";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -11,8 +11,10 @@ import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 
 import { Link, useNavigate } from "react-router-dom";
+import UserContext from "../context/user";
 
 const NewTrade = () => {
+  const userContext = useContext(UserContext);
   const [currentUser, getCurrentUser] = useState(() => {
     const savedData = localStorage.getItem("currentUser");
     return savedData ? savedData : "no User found";
@@ -156,8 +158,6 @@ const NewTrade = () => {
       traderID: localStorage.getItem("currentUserID").replace(/"/g, ""),
       traderName: localStorage.getItem("currentUserName").replace(/"/g, ""),
     };
-
-    console.log("Submitting trade with payload:", payload);
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -186,6 +186,7 @@ const NewTrade = () => {
           throw "an unknown error has occurred, please try again later";
         }
       } else {
+        userContext.setStatus("Trade successfully created!");
         navigate("/mytrades");
       }
       return data;

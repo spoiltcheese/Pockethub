@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router";
+import UserContext from "../context/user";
 
 const SingleTrade = () => {
   const queryClient = useQueryClient();
   const { tradeID } = useParams();
+  const userContext = useContext(UserContext);
 
   async function getTrade() {
     const url = `${import.meta.env.VITE_API_URL}/api/trades/${tradeID}`;
@@ -35,12 +37,13 @@ const SingleTrade = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          //gameID: localStorage.getItem("currentUserID").replace(/"/g, ""),
           tradeID: tradeID,
         }),
       });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
+      } else {
+        userContext.setStatus("Trade successfully accepted!");
       }
 
       const result = await response.json();
@@ -64,12 +67,13 @@ const SingleTrade = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          //gameID: localStorage.getItem("currentUserID").replace(/"/g, ""),
           tradeID: tradeID,
         }),
       });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
+      } else {
+        userContext.setStatus("Trade successfully completed!");
       }
 
       const result = await response.json();
@@ -95,6 +99,11 @@ const SingleTrade = () => {
 
       {queryTrade.isSuccess && (
         <div>
+          {userContext.status && (
+            <div className="alert alert-success" role="alert">
+              {userContext.status}
+            </div>
+          )}
           {queryTrade.data &&
             queryTrade.data.map((trade) => (
               <div key={trade.uuid}>
