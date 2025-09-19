@@ -251,21 +251,22 @@ def accept_trade():
 
         cursor.execute(
             "SELECT uuid FROM auth WHERE gameid = %s",
-            (inputs['tradeID'],)
+            (claims["gameID"],)
         )
         trader_result = cursor.fetchone()
 
         if not trader_result:
+            print("No trader found")
             return jsonify(status='error', msg='Invalid traderID'), 400
 
-        tradee_uuid = trader_result[0]
+        tradee_uuid = trader_result['uuid']
 
         cursor.execute("""
                         UPDATE trades
-                        SET "status" = 'ACCEPTED', "tradeeID" = %s, 'tradeeUUID' = %s
+                        SET "status" = 'ACCEPTED', "tradeeID" = %s, "tradeeUUID" = %s
                         where "uuid" = %s
                         """,
-                       (claims["gameID"],inputs["tradeID"], tradee_uuid))
+                       (claims["gameID"], tradee_uuid, inputs["tradeID"]))
 
 
         conn.commit()
@@ -299,7 +300,7 @@ def accept_trade():
         release_connection(conn)
 
 
-@trades.route('/trades/completeTrade/' , methods=['POST'])
+@trades.route('/trades/completeTrade' , methods=['POST'])
 @jwt_required()
 def complete_trade():
     conn = None
@@ -313,16 +314,17 @@ def complete_trade():
         conn, cursor = get_cursor()
         cursor.execute("""select *
                         from trades
-                        where "traderid" = %s or "tradeeid" = %s
+                        where "traderID" = %s or "tradeeID" = %s
                         """,
                        (claims["gameID"],claims["gameID"]))
         result = cursor.fetchall()
 
         if (cursor.rowcount != 0):
+            print(" trader found")
             cursor.execute("""
                             UPDATE trades
                             SET "status" = 'COMPLETED'
-                            where "uuid" = %s
+                            WHERE "uuid" = %s
                             """,
                        (inputs['tradeID'],))
             conn.commit()
