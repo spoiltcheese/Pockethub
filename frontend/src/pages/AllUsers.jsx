@@ -5,7 +5,14 @@ const AllUsers = () => {
   async function getAllUsers() {
     const url = `${import.meta.env.VITE_API_URL}/auth/users`;
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage
+            .getItem("access")
+            .replace(/"/g, "")}`,
+        },
+      });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
