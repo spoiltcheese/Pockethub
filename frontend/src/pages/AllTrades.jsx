@@ -36,9 +36,9 @@ const AllTrades = () => {
       {queryAllTrades.isSuccess && (
         <div>
           {queryAllTrades.data &&
-            queryAllTrades.data.map((trade) => (
+            queryAllTrades.data.map((trade, idx) => (
               <>
-                <div className="row" key={trade.uuid}>
+                <div className="row" key={idx}>
                   <div className="col-md-3">
                     <a href={`/trade/${trade.uuid}`}>Go to trade</a>
                   </div>
