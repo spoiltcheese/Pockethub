@@ -335,7 +335,6 @@ def complete_trade():
         result = cursor.fetchall()
 
         if (cursor.rowcount != 0):
-            print(" trader found")
             cursor.execute("""
                             UPDATE trades
                             SET "status" = 'COMPLETED'
