@@ -26,13 +26,13 @@ const SingleTrade = () => {
 
   async function acceptTrade() {
     const url = `${import.meta.env.VITE_API_URL}/api/trades/acceptTrade`;
+    const accessToken = localStorage.getItem("access").replace(/"/g, "");
+
     try {
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${localStorage
-            .getItem("access")
-            .replace(/"/g, "")}`,
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -49,6 +49,7 @@ const SingleTrade = () => {
 
       return result;
     } catch (error) {
+      userContext.setStatus(error.message);
       return [];
     }
   }
@@ -77,6 +78,7 @@ const SingleTrade = () => {
       const result = await response.json();
       return result;
     } catch (error) {
+      userContext.setStatus(error.message);
       return [];
     }
   }
@@ -88,6 +90,11 @@ const SingleTrade = () => {
 
   return (
     <div className="container">
+      {userContext.status && (
+        <div className="alert alert-success" role="alert">
+          {userContext.status}
+        </div>
+      )}
       <div className="row">
         <div className="col-md-3">Looking for:</div>
         <div className="col-md-3">Cards available to trade:</div>
@@ -96,11 +103,6 @@ const SingleTrade = () => {
 
       {queryTrade.isSuccess && (
         <div>
-          {userContext.status && (
-            <div className="alert alert-success" role="alert">
-              {userContext.status}
-            </div>
-          )}
           {queryTrade.data &&
             queryTrade.data.map((trade) => (
               <div key={trade.uuid}>
