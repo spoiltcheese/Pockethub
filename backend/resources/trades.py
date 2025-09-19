@@ -253,13 +253,27 @@ def accept_trade():
             "SELECT uuid FROM auth WHERE gameid = %s",
             (claims["gameID"],)
         )
-        trader_result = cursor.fetchone()
+        tradee_result = cursor.fetchone()
 
-        if not trader_result:
-            print("No trader found")
+        if not tradee_result:
+
             return jsonify(status='error', msg='Invalid traderID'), 400
 
-        tradee_uuid = trader_result['uuid']
+        tradee_uuid = tradee_result['uuid']
+
+        cursor.execute(
+            """
+            SELECT "traderUUID" FROM trades WHERE "traderUUID" = %s
+            """,
+            (tradee_uuid,)
+        )
+        trader_result = cursor.fetchone()
+
+        if trader_result:
+
+            return jsonify(status='error', msg='cannot trade with yourself!'), 400
+
+
 
         cursor.execute("""
                         UPDATE trades
