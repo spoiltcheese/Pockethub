@@ -49,6 +49,7 @@ const SingleTrade = () => {
 
       return result;
     } catch (error) {
+      userContext.setStatus(error.message);
       return [];
     }
   }
@@ -77,6 +78,7 @@ const SingleTrade = () => {
       const result = await response.json();
       return result;
     } catch (error) {
+      userContext.setStatus(error.message);
       return [];
     }
   }

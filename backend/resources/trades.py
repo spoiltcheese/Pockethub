@@ -21,7 +21,8 @@ def find_all_trades():
                         u."gameid" as "traderID",
                         u."name" as "traderName",
                         m1.uri as "LFURI",
-                        m2.uri as "TWURI"
+                        m2.uri as "TWURI",
+                        t."uuid" as "uuid"
                         from "trades" t
                         join cards c1 on c1.cardnumber = t."lookingforID"
                         join cards c2 on c2.cardnumber = t."tradingwithID"
