@@ -34,6 +34,8 @@ Run the SQL in `/sql` files in this order: auth, cards, media, trade. Do _not_ m
 auth and trades can be optionally seeded with data from
 the folder `sql/seed_data`.
 
+> Due to security, there is no endpoint to promote a user to admin. Admins must be promoted using the database itself.
+
 # React Component Tree
 
 ![React](React_Diagram.png)
