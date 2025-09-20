@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 DROP TABLE IF EXISTS "public"."auth";
 -- Table Definition
 CREATE TABLE "public"."auth" (
